@@ -611,6 +611,91 @@
   .ripple-el{position:absolute;border-radius:50%;background:rgba(94,234,212,.12);transform:scale(0);animation:rpl .55s ease-out forwards;pointer-events:none}
   @keyframes rpl{to{transform:scale(4);opacity:0}}
 
+  /* ─── CORRELATION HEATMAP ─── */
+  .corr-wrap{overflow-x:auto;padding:20px}
+  .corr-table{border-collapse:collapse;font-family:var(--mono);font-size:9px;min-width:600px}
+  .corr-table th{padding:4px 6px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;font-weight:500;text-align:center}
+  .corr-table th.row-lbl{text-align:right;padding-right:10px;color:var(--ink-2);font-size:8.5px}
+  .corr-cell{width:36px;height:28px;text-align:center;font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.85);border:1px solid rgba(0,0,0,.2);transition:transform .15s;cursor:default;font-weight:500}
+  .corr-cell:hover{transform:scale(1.2);z-index:10;position:relative}
+
+  /* ─── DRIFT VISUALIZER ─── */
+  .drift-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  @media(max-width:760px){.drift-grid{grid-template-columns:repeat(2,1fr)}}
+  .drift-item{background:var(--bg-1);padding:20px 22px}
+  .drift-item .d-name{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .drift-item .d-name .d-delta{font-size:11px;font-weight:600;transition:.3s}
+  .drift-bar-row{margin-bottom:10px}
+  .drift-bar-label{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);margin-bottom:4px;display:flex;justify-content:space-between}
+  .drift-bar-label .v{color:var(--ink-2)}
+  .drift-bar-track{height:6px;background:var(--line-2);border-radius:0;overflow:hidden;position:relative}
+  .drift-bar-fill{height:100%;border-radius:0;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+  /* ─── BACKTEST ─── */
+  #btChart{max-height:220px;padding:14px 18px}
+  .bt-meta{display:flex;gap:20px;flex-wrap:wrap;padding:10px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px}
+
+  /* ─── KEYBOARD HELP OVERLAY ─── */
+  #help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center}
+  #help-overlay.open{display:flex}
+  #help-box{width:100%;max-width:520px;background:#0d0f12;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.8)}
+  .help-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.16em}
+  .help-head .close-btn{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:16px;line-height:1;padding:0}
+  .help-close:hover{color:var(--ink)}
+  .help-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  @media(max-width:480px){.help-grid{grid-template-columns:1fr}}
+  .help-item{display:flex;justify-content:space-between;align-items:center;padding:11px 20px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px}
+  .help-item:last-child{border:none}
+  .help-item .h-act{color:var(--ink-2)}
+  .help-kbd{display:inline-flex;gap:4px;align-items:center}
+  .hk{border:1px solid var(--line-2);background:var(--bg-2);padding:3px 7px;border-radius:3px;font-size:10px;color:var(--ink-2)}
+  .help-foot{padding:10px 20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:9.5px;color:var(--ink-4);text-align:center}
+
+  /* ─── FULL MOBILE RESPONSIVENESS ─── */
+  @media(max-width:760px){
+    .geo-grid{grid-template-columns:repeat(3,1fr)}
+    .stress-grid{grid-template-columns:1fr 1fr}
+    .scen-grid{grid-template-columns:1fr 1fr}
+    .rules-grid{grid-template-columns:1fr 1fr}
+    .esg-row{grid-template-columns:1fr}
+    .tax-grid{grid-template-columns:1fr}
+    .conc-grid{grid-template-columns:1fr}
+    .impl-grid{grid-template-columns:1fr}
+    .alloc-grid{grid-template-columns:1fr}
+    .prof-grid{grid-template-columns:1fr}
+    .refs-list{grid-template-columns:1fr}
+    .ring-wrap{min-height:auto;padding:24px}
+    .ring-canvas-wrap{width:260px;height:260px}
+    #allocChart{width:260px!important;height:260px!important}
+    .bias-grid{grid-template-columns:1fr 1fr}
+    #cmd-palette,#help-box{max-width:calc(100vw - 32px);margin:16px}
+    #cmd-overlay,#help-overlay{align-items:flex-start;padding-top:10vh}
+    .hero h1{font-size:clamp(36px,10vw,72px)}
+    .s-title{font-size:clamp(22px,6vw,36px)}
+    .exec-grid{grid-template-columns:repeat(2,1fr)}
+    .risk-metrics{grid-template-columns:repeat(2,1fr)}
+    table.htbl{min-width:700px}
+    .drift-grid{grid-template-columns:1fr 1fr}
+    .corr-wrap{padding:10px}
+    .corr-cell{width:26px;height:22px;font-size:7px}
+    .corr-table th{font-size:7px;padding:3px 4px}
+    .ips-scorecard{grid-template-columns:1fr 1fr}
+    .goals-strip{grid-template-columns:1fr}
+  }
+  @media(max-width:480px){
+    .stress-grid{grid-template-columns:1fr}
+    .bias-grid{grid-template-columns:1fr}
+    .scen-grid{grid-template-columns:1fr}
+    .exec-grid{grid-template-columns:repeat(2,1fr)}
+    .geo-grid{grid-template-columns:repeat(2,1fr)}
+    .drift-grid{grid-template-columns:1fr}
+    .help-grid{grid-template-columns:1fr}
+    section.s{padding:40px 16px}
+    .hero{padding:32px 16px 24px}
+    .container{padding:0}
+    .ring-canvas-wrap{width:220px;height:220px}
+  }
+
   /* ─── PRINT ─── */
   @media print{
     body{background:#fff!important;color:#111!important}
@@ -668,6 +753,31 @@
   </div>
 </div>
 
+<!-- KEYBOARD HELP OVERLAY -->
+<div id="help-overlay">
+  <div id="help-box">
+    <div class="help-head">
+      <span>Keyboard Shortcuts</span>
+      <button class="help-close close-btn" onclick="document.getElementById('help-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="help-grid">
+      <div class="help-item"><span class="h-act">Command palette</span><span class="help-kbd"><span class="hk">⌘</span><span class="hk">K</span></span></div>
+      <div class="help-item"><span class="h-act">This help</span><span class="help-kbd"><span class="hk">?</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §01 Summary</span><span class="help-kbd"><span class="hk">G</span><span class="hk">1</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §02 Profile</span><span class="help-kbd"><span class="hk">G</span><span class="hk">2</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §03 Allocation</span><span class="help-kbd"><span class="hk">G</span><span class="hk">3</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §04 Holdings</span><span class="help-kbd"><span class="hk">G</span><span class="hk">4</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §05 Risk</span><span class="help-kbd"><span class="hk">G</span><span class="hk">5</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §06 Impl.</span><span class="help-kbd"><span class="hk">G</span><span class="hk">6</span></span></div>
+      <div class="help-item"><span class="h-act">Go to §07 Conclusion</span><span class="help-kbd"><span class="hk">G</span><span class="hk">7</span></span></div>
+      <div class="help-item"><span class="h-act">Print / Export PDF</span><span class="help-kbd"><span class="hk">⌘</span><span class="hk">P</span></span></div>
+      <div class="help-item"><span class="h-act">Reset allocation</span><span class="help-kbd"><span class="hk">R</span></span></div>
+      <div class="help-item"><span class="h-act">Close any overlay</span><span class="help-kbd"><span class="hk">Esc</span></span></div>
+    </div>
+    <div class="help-foot">Press <strong>Esc</strong> or click outside to close</div>
+  </div>
+</div>
+
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="tb-logo">
@@ -685,7 +795,7 @@
     <span class="tb-divider"></span>
     <span>EUR/USD <span id="eurusd-val">1.0942</span></span>
     <span class="tb-divider"></span>
-    <span>v2.0 · <span class="tb-kbd">⌘K</span></span>
+    <span><span class="tb-kbd">⌘K</span> search · <span class="tb-kbd">?</span> help</span>
     <button class="print-btn" onclick="window.print()">⎙ PRINT</button>
   </div>
 </div>
@@ -957,9 +1067,62 @@
       </div>
     </div>
 
+    <div class="panel fade" style="margin-top:24px">
+      <div class="p-head">
+        <div><span class="ix">03.3</span>REBALANCING DRIFT VISUALIZER</div>
+        <div class="right">CURRENT vs TARGET · SLIDER-LINKED</div>
+      </div>
+      <div class="drift-grid" id="drift-grid">
+        <div class="drift-item">
+          <div class="d-name">Equities <span class="d-delta" id="drift-eq-d">±0%</span></div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Target</span><span class="v">55%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-eq-t" style="width:55%;background:var(--acc)"></div></div>
+          </div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Current</span><span class="v" id="drift-eq-cv">55%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-eq-c" style="width:55%;background:rgba(94,234,212,.4)"></div></div>
+          </div>
+        </div>
+        <div class="drift-item">
+          <div class="d-name">Fixed Income <span class="d-delta" id="drift-fi-d">±0%</span></div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Target</span><span class="v">35%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-fi-t" style="width:35%;background:var(--cyan)"></div></div>
+          </div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Current</span><span class="v" id="drift-fi-cv">35%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-fi-c" style="width:35%;background:rgba(95,209,255,.4)"></div></div>
+          </div>
+        </div>
+        <div class="drift-item">
+          <div class="d-name">Real Assets <span class="d-delta" id="drift-ra-d">±0%</span></div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Target</span><span class="v">7%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-ra-t" style="width:7%;background:var(--warn)"></div></div>
+          </div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Current</span><span class="v" id="drift-ra-cv">7%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-ra-c" style="width:7%;background:rgba(255,179,71,.4)"></div></div>
+          </div>
+        </div>
+        <div class="drift-item">
+          <div class="d-name">Cash <span class="d-delta" id="drift-ca-d">±0%</span></div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Target</span><span class="v">3%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-ca-t" style="width:3%;background:var(--ink-3)"></div></div>
+          </div>
+          <div class="drift-bar-row">
+            <div class="drift-bar-label"><span>Current</span><span class="v" id="drift-ca-cv">3%</span></div>
+            <div class="drift-bar-track"><div class="drift-bar-fill" id="drift-ca-c" style="width:3%;background:rgba(64,70,82,.6)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="panel proj-panel fade">
       <div class="p-head">
-        <div><span class="ix">03.3</span>20-YEAR PROJECTION · €500K BASE</div>
+        <div><span class="ix">03.5</span>20-YEAR PROJECTION · €500K BASE</div>
         <div class="right"><span>SCENARIOS · 3</span></div>
       </div>
       <canvas id="projChart" height="180"></canvas>
@@ -972,7 +1135,7 @@
 
     <div class="panel fade" style="margin-top:24px">
       <div class="p-head">
-        <div><span class="ix">03.4</span>GEOGRAPHIC EXPOSURE · LOOK-THROUGH ANALYSIS</div>
+        <div><span class="ix">03.6</span>GEOGRAPHIC EXPOSURE · LOOK-THROUGH ANALYSIS</div>
         <div class="right">BASED ON UNDERLYING INDICES</div>
       </div>
       <div class="geo-grid">
@@ -987,7 +1150,7 @@
 
     <div class="panel glide-panel fade">
       <div class="p-head">
-        <div><span class="ix">03.5</span>ASSET GLIDE PATH · 2026 → 2041</div>
+        <div><span class="ix">03.7</span>ASSET GLIDE PATH · 2026 → 2041</div>
         <div class="right">RISK REDUCTION AS RETIREMENT APPROACHES</div>
       </div>
       <canvas id="glideChart" height="180"></canvas>
@@ -995,7 +1158,7 @@
 
     <div class="panel frontier-panel fade">
       <div class="p-head">
-        <div><span class="ix">03.6</span>EFFICIENT FRONTIER · MODERN PORTFOLIO THEORY</div>
+        <div><span class="ix">03.8</span>EFFICIENT FRONTIER · MODERN PORTFOLIO THEORY</div>
         <div class="right">IVAN'S PORTFOLIO ON THE CURVE</div>
       </div>
       <canvas id="frontierChart" height="200"></canvas>
@@ -1004,7 +1167,7 @@
 
     <div class="panel fade" style="margin-top:24px;background:linear-gradient(180deg,#0c0e10,#0a0c0e)">
       <div class="p-head">
-        <div><span class="ix">03.7</span>🇧🇬 BULGARIA · EUROZONE CONTEXT</div>
+        <div><span class="ix">03.9</span>🇧🇬 BULGARIA · EUROZONE CONTEXT</div>
         <div class="right">JAN 2026</div>
       </div>
       <div class="p-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
@@ -1132,6 +1295,20 @@
         </div>
       </div>
     </div>
+
+    <div class="panel fade" style="margin-top:24px">
+      <div class="p-head">
+        <div><span class="ix">04.4</span>CORRELATION MATRIX · ALL 13 HOLDINGS</div>
+        <div class="right">LOW CORRELATION = BETTER DIVERSIFICATION</div>
+      </div>
+      <div class="corr-wrap" id="corr-wrap"></div>
+      <div style="padding:8px 20px 14px;display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10px;color:var(--ink-3);border-top:1px solid var(--line);flex-wrap:wrap">
+        <span>Low / Negative</span>
+        <span style="display:inline-flex;gap:2px"><span style="width:16px;height:10px;background:#22d39a;display:inline-block"></span><span style="width:16px;height:10px;background:#5eead4;display:inline-block"></span><span style="width:16px;height:10px;background:#404652;display:inline-block"></span><span style="width:16px;height:10px;background:#ff8c42;display:inline-block"></span><span style="width:16px;height:10px;background:#ff5470;display:inline-block"></span></span>
+        <span>High / Positive</span>
+        <span style="margin-left:auto;color:var(--ink-2)">Hover a cell to see the pair</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1175,7 +1352,21 @@
 
     <div class="panel fade" style="margin-bottom:36px">
       <div class="p-head">
-        <div><span class="ix">05.2</span>MONTE CARLO SIMULATION · 300 PATHS · 20 YEARS</div>
+        <div><span class="ix">05.2</span>HISTORICAL BACKTEST · JAN 2020 → APR 2026</div>
+        <div class="right">HOW THIS PORTFOLIO SURVIVED THE REAL WORLD</div>
+      </div>
+      <canvas id="btChart" height="200"></canvas>
+      <div class="bt-meta">
+        <div class="leg"><span class="sw" style="background:var(--acc);height:2px"></span>Ivan Petrov Portfolio<span class="dv">·</span><span style="color:var(--acc)" class="num">+41.2% total</span></div>
+        <div class="leg"><span class="sw" style="background:var(--ink-3);height:1px;border-top:2px dashed var(--ink-3)"></span>Benchmark 60/40<span class="dv">·</span><span style="color:var(--ink-3)" class="num">+32.7% total</span></div>
+        <div class="leg"><span style="color:var(--dn)">▼</span><span style="color:var(--dn);margin-left:4px">COVID crash −22%</span></div>
+        <div class="leg"><span style="color:var(--warn)">▼</span><span style="color:var(--warn);margin-left:4px">2022 rate shock −14%</span></div>
+      </div>
+    </div>
+
+    <div class="panel fade" style="margin-bottom:36px">
+      <div class="p-head">
+        <div><span class="ix">05.3</span>MONTE CARLO SIMULATION · 300 PATHS · 20 YEARS</div>
         <div class="right">μ=6.5% · σ=12% · BASE CASE</div>
       </div>
       <canvas id="mcChart" height="220" style="padding:14px 18px"></canvas>
@@ -1903,25 +2094,34 @@ window.addEventListener('scroll',()=>{
 })();
 
 // ─── ANIMATED KPI COUNTERS ───
-function countUp(el,target,duration,prefix,suffix){
+function countUp(el,target,duration,suffix){
+  const orig=el.textContent;
   const start=performance.now();
-  const from=0;
   function step(now){
     const p=Math.min((now-start)/duration,1);
-    const val=Math.round(from+p*(target-from));
-    el.textContent=(prefix||'')+val.toLocaleString('de-DE')+(suffix||'');
+    const ease=1-Math.pow(1-p,3);
+    const val=Math.round(ease*target);
+    el.textContent=val.toLocaleString('de-DE')+(suffix||'');
     if(p<1)requestAnimationFrame(step);
+    else el.textContent=orig;
   }
   requestAnimationFrame(step);
 }
-const kpiCells=document.querySelectorAll('.exec-cell .v');
+const kpiData=[
+  {sel:'.exec-cell:nth-child(1) .v',val:500000,sfx:''},
+  {sel:'.exec-cell:nth-child(2) .v',val:65,sfx:''},
+  {sel:'.exec-cell:nth-child(4) .v',val:20,sfx:''},
+  {sel:'.exec-cell:nth-child(6) .v',val:22,sfx:''},
+];
 const kpiObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting)return;
     kpiObs.unobserve(e.target);
+    const d=kpiData.find(k=>e.target.matches(k.sel));
+    if(d)countUp(e.target,d.val,900,d.sfx);
   });
-},{threshold:0.5});
-kpiCells.forEach(el=>kpiObs.observe(el));
+},{threshold:0.6});
+kpiData.forEach(d=>{const el=document.querySelector(d.sel);if(el)kpiObs.observe(el);});
 
 // ─── PERFORMANCE CHART (§01) ───
 (function(){
@@ -2298,6 +2498,144 @@ document.querySelectorAll('.exec-cell,.kpi-cell,.scen,.goal').forEach(addRipple)
 
 // Override buildTicker to also update sparklines
 window.buildTicker=buildTickerAndSparks;
+
+// ─── DRIFT VISUALIZER ───
+const TARGETS={eq:55,fi:35,ra:7,ca:3};
+function updateDrift(eq,fi,ra,ca){
+  const cur={eq,fi,ra,ca};
+  Object.keys(TARGETS).forEach(k=>{
+    const t=TARGETS[k],c=cur[k],diff=c-t;
+    const abs=Math.abs(diff);
+    const colors={eq:'rgba(94,234,212,.4)',fi:'rgba(95,209,255,.4)',ra:'rgba(255,179,71,.4)',ca:'rgba(64,70,82,.6)'};
+    const alertCol=abs>=5?'var(--dn)':abs>=3?'var(--warn)':colors[k];
+    const dEl=document.getElementById('drift-'+k+'-d');
+    const cvEl=document.getElementById('drift-'+k+'-cv');
+    const cBar=document.getElementById('drift-'+k+'-c');
+    if(dEl){dEl.textContent=(diff>=0?'+':'')+diff.toFixed(1)+'%';dEl.style.color=abs>=5?'var(--dn)':abs>=3?'var(--warn)':'var(--up)';}
+    if(cvEl)cvEl.textContent=c+'%';
+    if(cBar){cBar.style.width=Math.min(100,c*1.1)+'%';cBar.style.background=alertCol;}
+  });
+}
+['sl-eq','sl-fi','sl-ra'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{
+    const eq=+document.getElementById('sl-eq').value;
+    const fi=+document.getElementById('sl-fi').value;
+    const ra=+document.getElementById('sl-ra').value;
+    const ca=Math.max(0,100-eq-fi-ra);
+    updateDrift(eq,fi,ra,ca);
+  });
+});
+document.getElementById('resetBtn').addEventListener('click',()=>updateDrift(55,35,7,3));
+updateDrift(55,35,7,3);
+
+// ─── CORRELATION HEATMAP ───
+(function(){
+  const tickers=['IWDA','EXW1','EIMI','SAWD','XDWT','IEGY','IEBC','IHYG','BULGAR','CSH2','INFR','IWDP','MMF'];
+  const corrMatrix=[
+    [1.00,0.72,0.68,0.97,0.82,-0.15,-0.08,0.22,0.05,0.02,0.38,0.45,0.00],
+    [0.72,1.00,0.55,0.70,0.60,-0.22,-0.12,0.18,0.12,-0.05,0.35,0.40,0.00],
+    [0.68,0.55,1.00,0.66,0.75,-0.10,-0.02,0.28,0.08,0.00,0.42,0.38,0.00],
+    [0.97,0.70,0.66,1.00,0.80,-0.14,-0.07,0.21,0.04,0.02,0.36,0.44,0.00],
+    [0.82,0.60,0.75,0.80,1.00,-0.12,-0.05,0.25,0.06,0.01,0.40,0.35,0.00],
+    [-0.15,-0.22,-0.10,-0.14,-0.12,1.00,0.72,0.35,0.58,0.82,-0.05,0.10,0.02],
+    [-0.08,-0.12,-0.02,-0.07,-0.05,0.72,1.00,0.55,0.45,0.65,-0.02,0.15,0.01],
+    [0.22,0.18,0.28,0.21,0.25,0.35,0.55,1.00,0.30,0.28,0.15,0.25,0.00],
+    [0.05,0.12,0.08,0.04,0.06,0.58,0.45,0.30,1.00,0.52,0.08,0.12,0.01],
+    [0.02,-0.05,0.00,0.02,0.01,0.82,0.65,0.28,0.52,1.00,-0.04,0.08,0.01],
+    [0.38,0.35,0.42,0.36,0.40,-0.05,-0.02,0.15,0.08,-0.04,1.00,0.55,0.00],
+    [0.45,0.40,0.38,0.44,0.35,0.10,0.15,0.25,0.12,0.08,0.55,1.00,0.00],
+    [0.00,0.00,0.00,0.00,0.00,0.02,0.01,0.00,0.01,0.01,0.00,0.00,1.00],
+  ];
+  function corrColor(v){
+    if(v>=0.8)return '#ff5470';
+    if(v>=0.6)return '#ff8c42';
+    if(v>=0.4)return '#c4862a';
+    if(v>=0.2)return '#5a5e66';
+    if(v>=-0.1)return '#404652';
+    return '#22d39a';
+  }
+  const wrap=document.getElementById('corr-wrap');
+  if(!wrap)return;
+  let html='<table class="corr-table"><thead><tr><th></th>';
+  tickers.forEach(t=>html+=`<th>${t}</th>`);
+  html+='</tr></thead><tbody>';
+  corrMatrix.forEach((row,i)=>{
+    html+=`<tr><th class="row-lbl">${tickers[i]}</th>`;
+    row.forEach((v,j)=>{
+      const isDiag=i===j;
+      const bg=isDiag?'var(--acc)':corrColor(v);
+      const txt=isDiag?'1.00':v.toFixed(2);
+      const title=`${tickers[i]} vs ${tickers[j]}: ${v.toFixed(2)}`;
+      html+=`<td class="corr-cell" style="background:${bg}" title="${title}">${txt}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML=html;
+})();
+
+// ─── HISTORICAL BACKTEST (§05) ───
+(function(){
+  const months=[];
+  const start=new Date(2020,0,1);
+  for(let i=0;i<52;i++){const d=new Date(start);d.setMonth(start.getMonth()+i);months.push(d.toLocaleDateString('en-GB',{month:'short',year:'2-digit'}));}
+  const pf=[100,96.2,78.0,81.4,87.2,92.5,97.8,101.2,104.5,108.1,111.4,114.2,
+            118.5,116.2,119.8,122.4,126.8,130.2,128.4,132.6,136.2,133.8,130.4,127.8,
+            124.2,121.0,118.4,122.6,126.8,129.4,131.2,133.6,128.4,125.2,128.8,132.4,
+            135.6,138.2,136.4,139.8,142.4,145.2,141.2,138.6,141.2,143.8,136.8,133.6,
+            136.2,139.4,141.2,143.4];
+  const bm=[100,97.1,82.4,85.2,89.6,93.8,97.2,100.4,103.2,106.4,109.2,112.0,
+            115.4,113.2,116.8,119.4,122.6,125.4,123.8,127.2,130.4,128.4,125.2,122.8,
+            120.4,117.8,115.6,119.2,122.8,125.2,126.8,128.4,124.2,121.4,124.2,127.4,
+            130.2,132.4,130.6,133.8,136.2,138.4,134.8,132.2,134.8,137.0,130.8,128.2,
+            130.6,133.2,134.8,136.8];
+  try{
+    const ctx=document.getElementById('btChart').getContext('2d');
+    new Chart(ctx,{
+      type:'line',
+      data:{
+        labels:months,
+        datasets:[
+          {label:'Ivan Petrov Portfolio',data:pf,borderColor:'#5eead4',backgroundColor:'rgba(94,234,212,.05)',borderWidth:2,pointRadius:0,pointHoverRadius:5,fill:true,tension:.3},
+          {label:'Benchmark 60/40',data:bm,borderColor:'#6b7280',borderWidth:1.5,borderDash:[5,4],pointRadius:0,pointHoverRadius:4,fill:false,tension:.3},
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${(c.raw-100).toFixed(1)}%`},backgroundColor:'#000',titleColor:'#5eead4',titleFont:{family:'JetBrains Mono',size:11,weight:'600'},bodyFont:{family:'JetBrains Mono',size:11},padding:12,borderColor:'#262a30',borderWidth:1,cornerRadius:3},
+          annotation:{annotations:{covid:{type:'line',xMin:'Mar \'20',xMax:'Mar \'20',borderColor:'rgba(255,84,112,.4)',borderWidth:1,borderDash:[4,4]}}},
+        },
+        scales:{
+          x:{grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:9},maxTicksLimit:10}},
+          y:{grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10},callback:v=>(v-100).toFixed(0)+'%'}}
+        }
+      }
+    });
+  }catch(e){console.warn('Backtest chart:',e)}
+})();
+
+// ─── KEYBOARD HELP OVERLAY ───
+(function(){
+  const overlay=document.getElementById('help-overlay');
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('open');});
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+    if(e.key==='?'&&!e.shiftKey&&!e.metaKey&&!e.ctrlKey){
+      e.preventDefault();
+      overlay.classList.toggle('open');
+    }
+    if(e.key==='Escape'){
+      overlay.classList.remove('open');
+      document.getElementById('cmd-overlay').classList.remove('open');
+    }
+    if(e.key.toLowerCase()==='r'&&!e.metaKey&&!e.ctrlKey&&!overlay.classList.contains('open')){
+      document.getElementById('resetBtn')?.click();
+    }
+  });
+})();
 </script>
 </body>
 </html>
