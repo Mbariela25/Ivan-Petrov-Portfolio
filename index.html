@@ -462,9 +462,211 @@
     .s-head{grid-template-columns:1fr;gap:10px}
     .s-side{text-align:left}
   }
+
+  /* ─── SCROLL PROGRESS ─── */
+  #scroll-prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--acc),var(--cyan));z-index:300;width:0;pointer-events:none}
+
+  /* ─── SIDE NAV ─── */
+  #side-nav{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:2px;padding:8px 0}
+  .sn-item{display:flex;align-items:center;gap:10px;padding:7px 14px;cursor:pointer;text-decoration:none;transition:.2s}
+  .sn-dot{width:4px;height:4px;border-radius:50%;background:var(--ink-4);transition:.2s;flex-shrink:0}
+  .sn-label{font-family:var(--mono);font-size:9px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.14em;opacity:0;transform:translateX(-6px);transition:.2s;white-space:nowrap}
+  .sn-item:hover .sn-label,.sn-item.active .sn-label{opacity:1;transform:none;color:var(--ink-2)}
+  .sn-item.active .sn-dot{background:var(--acc);box-shadow:0 0 8px var(--acc);width:6px;height:6px}
+  .sn-item:hover .sn-dot{background:var(--ink-2)}
+  @media(max-width:900px){#side-nav{display:none}}
+
+  /* ─── BOOT ─── */
+  #boot{position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(24px,5vw,72px);font-family:var(--mono);font-size:13px;transition:opacity .7s}
+  #boot.out{opacity:0;pointer-events:none}
+  .boot-line{color:var(--acc);margin-bottom:8px;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s}
+  .boot-line.vis{opacity:1;transform:none}
+  .boot-line .dim{color:var(--ink-3)}
+  .boot-line .ok{color:var(--up)}
+  .boot-cursor{display:inline-block;width:8px;height:13px;background:var(--acc);animation:pulse .9s infinite;margin-left:4px;vertical-align:middle}
+
+  /* ─── COMMAND PALETTE ─── */
+  #cmd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);z-index:500;display:none;align-items:flex-start;justify-content:center;padding-top:14vh}
+  #cmd-overlay.open{display:flex}
+  #cmd-palette{width:100%;max-width:560px;background:#0d0f12;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 1px rgba(94,234,212,.07)}
+  .cmd-top{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);gap:12px}
+  .cmd-prm{font-family:var(--mono);font-size:14px;color:var(--acc)}
+  #cmd-inp{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:14px;caret-color:var(--acc)}
+  #cmd-inp::placeholder{color:var(--ink-4)}
+  .cmd-list{max-height:300px;overflow-y:auto}
+  .cmd-item{display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;border-bottom:1px solid var(--line);transition:.15s}
+  .cmd-item:last-child{border:none}
+  .cmd-item:hover,.cmd-item.sel{background:rgba(94,234,212,.05)}
+  .cmd-item.sel{border-left:2px solid var(--acc);padding-left:16px}
+  .cmd-item .ci{font-family:var(--mono);font-size:10px;color:var(--acc);min-width:36px}
+  .cmd-item .ct{font-size:13px;color:var(--ink)}
+  .cmd-item .cd{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:auto}
+  .cmd-foot{padding:8px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:9.5px;color:var(--ink-4);display:flex;gap:16px}
+
+  /* ─── PRINT BUTTON ─── */
+  .print-btn{background:transparent;border:1px solid var(--line-2);color:var(--ink-3);padding:4px 10px;border-radius:3px;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:.15s;margin-left:8px}
+  .print-btn:hover{border-color:var(--acc);color:var(--acc)}
+
+  /* ─── IPS SCORECARD ─── */
+  .ips-scorecard{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:20px}
+  @media(max-width:720px){.ips-scorecard{grid-template-columns:repeat(2,1fr)}}
+  .ips-sc-item{background:var(--bg-1);padding:14px 18px;display:flex;align-items:center;gap:10px}
+  .ips-sc-item .rn{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.08em;min-width:28px}
+  .ips-sc-item .rt{font-size:11.5px;color:var(--ink-2);flex:1;line-height:1.4}
+  .ips-badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:3px 8px;border-radius:2px;border:1px solid;text-transform:uppercase;flex-shrink:0}
+  .ips-badge.pass{color:var(--up);border-color:rgba(34,211,154,.3);background:rgba(34,211,154,.05)}
+  .ips-badge.monitor{color:var(--warn);border-color:rgba(255,179,71,.3);background:rgba(255,179,71,.05)}
+  .ips-badge.breach{color:var(--dn);border-color:rgba(255,84,112,.3);background:rgba(255,84,112,.05)}
+
+  /* ─── PERF / GLIDE / FRONTIER CHARTS ─── */
+  .perf-panel,.glide-panel,.frontier-panel{margin-top:24px}
+  #perfChart,#glideChart,#frontierChart{max-height:200px;padding:14px 18px}
+
+  /* ─── GEO EXPOSURE ─── */
+  .geo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:24px}
+  @media(max-width:900px){.geo-grid{grid-template-columns:repeat(3,1fr)}}
+  .geo-cell{background:var(--bg-1);padding:20px 12px;text-align:center}
+  .geo-bubble{width:52px;height:52px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:20px;position:relative}
+  .geo-cell .g-name{font-family:var(--mono);font-size:9px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+  .geo-cell .g-pct{font-family:var(--mono);font-size:18px;color:var(--ink);font-weight:400}
+  .geo-cell .g-eur{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);margin-top:2px}
+
+  /* ─── FACTOR RADAR ─── */
+  .radar-wrap{padding:24px;display:flex;justify-content:center}
+  #radarChart{max-width:340px;width:100%}
+
+  /* ─── ESG ─── */
+  .esg-tag{font-family:var(--mono);font-size:8px;letter-spacing:.1em;padding:2px 6px;border-radius:2px;border:1px solid rgba(34,211,154,.35);color:var(--up);background:rgba(34,211,154,.05);margin-left:8px;vertical-align:middle}
+  .esg-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:24px}
+  .esg-item{background:var(--bg-1);padding:20px;text-align:center}
+  .esg-item .e-lbl{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px}
+  .esg-item .e-val{font-family:var(--mono);font-size:38px;color:var(--acc);font-weight:300;letter-spacing:-.03em}
+  .esg-item .e-grade{font-family:var(--mono);font-size:10px;color:var(--up);margin-top:4px;text-transform:uppercase;letter-spacing:.14em}
+  .esg-item .e-bar{height:3px;background:var(--line-2);margin-top:10px;overflow:hidden}
+  .esg-item .e-fill{height:100%;background:var(--acc);transition:width 1.4s cubic-bezier(.4,0,.2,1);width:0}
+
+  /* ─── LIVE COLUMN in holdings ─── */
+  .spark-cell{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .row-chg{font-family:var(--mono);font-size:11px}
+  .row-chg.up{color:var(--up)}
+  .row-chg.dn{color:var(--dn)}
+  canvas.row-spark{display:block}
+
+  /* ─── MONTE CARLO ─── */
+  #mcChart{display:block;width:100%!important}
+  .mc-meta{display:flex;gap:24px;flex-wrap:wrap;padding:10px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px}
+  .mc-leg{display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+  .mc-leg .sw{width:20px;height:2px}
+
+  /* ─── STRESS TEST ─── */
+  .stress-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:36px}
+  @media(max-width:920px){.stress-grid{grid-template-columns:repeat(2,1fr)}}
+  .stress-card{background:var(--bg-1);padding:24px;cursor:pointer;transition:background .2s;position:relative}
+  .stress-card:hover,.stress-card.active{background:#0e1114}
+  .stress-tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px;color:var(--ink-3)}
+  .stress-name{font-family:var(--serif);font-size:19px;color:var(--ink);margin-bottom:8px;line-height:1.2}
+  .stress-drop{font-family:var(--mono);font-size:30px;color:var(--dn);font-weight:300;letter-spacing:-.03em;line-height:1;margin-bottom:12px}
+  .stress-bar-wrap{height:3px;background:var(--line-2);margin-bottom:14px;overflow:hidden}
+  .stress-bar-fill{height:100%;background:var(--dn);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+  .stress-info{font-family:var(--mono);font-size:10px;color:var(--ink-3);line-height:1.6}
+  .stress-info .s-recov{color:var(--up);margin-top:6px}
+
+  /* ─── QUIZ ─── */
+  .quiz-panel{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg-1);margin-bottom:36px}
+  .quiz-q{padding:24px 28px;border-bottom:1px solid var(--line)}
+  .quiz-num{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+  .quiz-text{font-size:15px;color:var(--ink);line-height:1.6;margin-bottom:18px}
+  .quiz-opts{display:flex;flex-direction:column;gap:8px}
+  .quiz-opt{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);padding:11px 16px;border-radius:3px;font-family:var(--mono);font-size:11px;text-align:left;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:10px}
+  .quiz-opt:hover:not(:disabled){border-color:var(--acc);color:var(--ink);background:rgba(94,234,212,.03)}
+  .quiz-opt:disabled{cursor:default}
+  .quiz-opt.correct{border-color:var(--up);color:var(--up);background:rgba(34,211,154,.05)}
+  .quiz-opt.wrong{border-color:var(--dn);color:var(--dn);background:rgba(255,84,112,.05)}
+  .quiz-opt .ok{min-width:16px;font-weight:700;color:var(--acc)}
+  .quiz-reveal{padding:16px 28px;background:#0b0e10;border-top:1px dashed var(--line-2);font-family:var(--mono);font-size:11px;color:var(--ink-2);line-height:1.7;display:none}
+  .quiz-reveal.show{display:block}
+  .quiz-reveal .bias-id{color:var(--warn);font-weight:600;margin-bottom:6px}
+  .quiz-reveal .ips-ref{color:var(--acc);margin-top:8px;border-left:2px solid var(--acc);padding-left:10px}
+  .quiz-nav{display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px}
+  .quiz-score-txt{color:var(--ink-2)}
+  .quiz-score-txt b{color:var(--acc)}
+  .quiz-next-btn{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);padding:7px 14px;border-radius:3px;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;cursor:pointer;transition:.15s}
+  .quiz-next-btn:hover{border-color:var(--acc);color:var(--acc)}
+  .quiz-next-btn:disabled{opacity:.3;cursor:default}
+
+  /* ─── DRAWDOWN CHART ─── */
+  #ddChart{max-height:160px;padding:14px 18px}
+
+  /* ─── TAX PANEL ─── */
+  .tax-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:28px}
+  @media(max-width:720px){.tax-grid{grid-template-columns:1fr}}
+  .tax-item{background:var(--bg-1);padding:22px}
+  .tax-item .t-lbl{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px}
+  .tax-item .t-val{font-family:var(--mono);font-size:26px;color:var(--ink);font-weight:300;letter-spacing:-.03em;line-height:1.1}
+  .tax-item .t-sub{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:6px;line-height:1.6}
+  .tax-item .t-accent{color:var(--acc)}
+
+  /* ─── RIPPLE ─── */
+  .ripple-host{overflow:hidden;position:relative}
+  .ripple-el{position:absolute;border-radius:50%;background:rgba(94,234,212,.12);transform:scale(0);animation:rpl .55s ease-out forwards;pointer-events:none}
+  @keyframes rpl{to{transform:scale(4);opacity:0}}
+
+  /* ─── PRINT ─── */
+  @media print{
+    body{background:#fff!important;color:#111!important}
+    #boot,#scroll-prog,#side-nav,#cmd-overlay,body::before,body::after{display:none!important}
+    .topbar,.ticker{display:none!important}
+    .fade{opacity:1!important;transform:none!important}
+    section.s{border-color:#ddd!important;padding:32px 20px!important}
+    .panel,.exec-grid,.prof-grid,.alloc-grid{border-color:#ddd!important;background:#fff!important}
+    .kpi-panel,.hero-tags,.reset{display:none!important}
+    body{background:#fff}
+    footer{color:#666!important;border-color:#ddd!important}
+    .s-num,.s-title,.exec-cell .v,.kpi-cell .v{color:#000!important}
+    .p-head{background:#f5f5f5!important;color:#333!important;border-color:#ddd!important}
+    table.htbl th{background:#1B3A6B!important}
+  }
 </style>
 </head>
 <body>
+
+<!-- BOOT OVERLAY -->
+<div id="boot">
+  <div class="boot-line" id="bl0">&gt; INIT IVAN PETROV PORTFOLIO TERMINAL v2.6 <span class="dim">// SMG Finance Club</span></div>
+  <div class="boot-line" id="bl1">&gt; LOADING MANDATE €500,000 · CLIENT: PETROV, I. · REF: IPP-26-001 <span class="ok">✓</span></div>
+  <div class="boot-line" id="bl2">&gt; CONNECTING MARKET DATA FEEDS · XETRA · EURONEXT · SOFIA <span class="ok">✓</span></div>
+  <div class="boot-line" id="bl3">&gt; BUILDING RISK ENGINE · SHARPE=0.60 · MAX_DD=−22% · VOL=9–11% <span class="ok">✓</span></div>
+  <div class="boot-line" id="bl4">&gt; BEHAVIORAL FIREWALL ACTIVE · 5 BIASES MONITORED · IPS R01–R06 <span class="ok">✓</span></div>
+  <div class="boot-line" id="bl5">&gt; <span class="ok">READY</span> <span class="boot-cursor"></span></div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-prog"></div>
+
+<!-- SIDE NAV -->
+<nav id="side-nav">
+  <a href="#summary" class="sn-item" data-sid="summary"><span class="sn-dot"></span><span class="sn-label">§01 SUMMARY</span></a>
+  <a href="#profile" class="sn-item" data-sid="profile"><span class="sn-dot"></span><span class="sn-label">§02 PROFILE &amp; IPS</span></a>
+  <a href="#allocation" class="sn-item" data-sid="allocation"><span class="sn-dot"></span><span class="sn-label">§03 ALLOCATION</span></a>
+  <a href="#holdings" class="sn-item" data-sid="holdings"><span class="sn-dot"></span><span class="sn-label">§04 HOLDINGS</span></a>
+  <a href="#risk" class="sn-item" data-sid="risk"><span class="sn-dot"></span><span class="sn-label">§05 RISK &amp; BEHAVIORAL</span></a>
+  <a href="#implementation" class="sn-item" data-sid="implementation"><span class="sn-dot"></span><span class="sn-label">§06 IMPLEMENTATION</span></a>
+  <a href="#conclusion" class="sn-item" data-sid="conclusion"><span class="sn-dot"></span><span class="sn-label">§07 CONCLUSION</span></a>
+</nav>
+
+<!-- COMMAND PALETTE -->
+<div id="cmd-overlay">
+  <div id="cmd-palette">
+    <div class="cmd-top">
+      <span class="cmd-prm">›</span>
+      <input id="cmd-inp" type="text" placeholder="Jump to section · type to filter…" autocomplete="off" spellcheck="false"/>
+    </div>
+    <div class="cmd-list" id="cmd-list"></div>
+    <div class="cmd-foot">
+      <span>↑↓ navigate</span><span>↵ select</span><span>esc close</span><span>⌘K toggle</span>
+    </div>
+  </div>
+</div>
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -481,9 +683,10 @@
   <div class="tb-status">
     <span class="ok">● MARKETS_OPEN</span>
     <span class="tb-divider"></span>
-    <span>EUR/USD 1.0942</span>
+    <span>EUR/USD <span id="eurusd-val">1.0942</span></span>
     <span class="tb-divider"></span>
-    <span>v1.0 · <span class="tb-kbd">⌘K</span></span>
+    <span>v2.0 · <span class="tb-kbd">⌘K</span></span>
+    <button class="print-btn" onclick="window.print()">⎙ PRINT</button>
   </div>
 </div>
 
@@ -600,6 +803,17 @@
         </p>
       </div>
     </div>
+    <div class="panel perf-panel fade">
+      <div class="p-head">
+        <div><span class="ix">01.2</span>PORTFOLIO PERFORMANCE · 12-MONTH vs BENCHMARK</div>
+        <div class="right"><span>MAY 2025 → APR 2026</span><span>·</span><span>HYPOTHETICAL</span></div>
+      </div>
+      <canvas id="perfChart" height="180"></canvas>
+      <div class="proj-meta">
+        <div class="leg"><span class="sw" style="background:var(--acc);height:2px"></span>Ivan Petrov Portfolio <span class="dv">·</span><span style="color:var(--acc)" class="num">+7.2% YTD</span></div>
+        <div class="leg"><span class="sw" style="background:var(--ink-3);height:2px;border-top:2px dashed var(--ink-3)"></span>Benchmark 60/40 <span class="dv">·</span><span style="color:var(--ink-3)" class="num">+5.8% YTD</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -634,6 +848,15 @@
           <div class="ips-row"><div class="n">R04</div><div class="t"><b>Behavioral guard:</b> no strategic changes within 30 days of a market decline &gt; 10%</div></div>
           <div class="ips-row"><div class="n">R05</div><div class="t"><b>Universe:</b> UCITS ETFs and listed bonds only — no derivatives, crypto, unlisted</div></div>
           <div class="ips-row"><div class="n">R06</div><div class="t"><b>Review cadence:</b> formal quarterly review · annual IPS update on 30 Apr</div></div>
+        </div>
+        <div class="p-head" style="border-top:1px solid var(--line);border-bottom:none"><div><span class="ix">02.3</span>IPS COMPLIANCE SCORECARD</div><div class="right">LIVE · SLIDER-LINKED</div></div>
+        <div class="ips-scorecard" id="ips-scorecard">
+          <div class="ips-sc-item"><span class="rn">R01</span><span class="rt">Target return ≥ inflation+3%</span><span class="ips-badge pass" id="sc-r01">PASS</span></div>
+          <div class="ips-sc-item"><span class="rn">R02</span><span class="rt">No single instrument &gt; 25%</span><span class="ips-badge pass" id="sc-r02">PASS</span></div>
+          <div class="ips-sc-item"><span class="rn">R03</span><span class="rt">Annual rebalance + ±5% trigger</span><span class="ips-badge pass" id="sc-r03">PASS</span></div>
+          <div class="ips-sc-item"><span class="rn">R04</span><span class="rt">30-day blackout post −10% drop</span><span class="ips-badge pass" id="sc-r04">PASS</span></div>
+          <div class="ips-sc-item"><span class="rn">R05</span><span class="rt">UCITS &amp; listed bonds only</span><span class="ips-badge pass" id="sc-r05">PASS</span></div>
+          <div class="ips-sc-item"><span class="rn">R06</span><span class="rt">Quarterly review cadence</span><span class="ips-badge pass" id="sc-r06">PASS</span></div>
         </div>
       </div>
     </div>
@@ -747,9 +970,41 @@
       </div>
     </div>
 
+    <div class="panel fade" style="margin-top:24px">
+      <div class="p-head">
+        <div><span class="ix">03.4</span>GEOGRAPHIC EXPOSURE · LOOK-THROUGH ANALYSIS</div>
+        <div class="right">BASED ON UNDERLYING INDICES</div>
+      </div>
+      <div class="geo-grid">
+        <div class="geo-cell"><div class="geo-bubble" style="background:rgba(94,234,212,.08);box-shadow:0 0 24px rgba(94,234,212,.12)">🇺🇸</div><div class="g-name">USA &amp; Canada</div><div class="g-pct">42%</div><div class="g-eur">€210,000</div></div>
+        <div class="geo-cell"><div class="geo-bubble" style="background:rgba(95,209,255,.08);box-shadow:0 0 24px rgba(95,209,255,.1)">🇪🇺</div><div class="g-name">Eurozone</div><div class="g-pct">23%</div><div class="g-eur">€115,000</div></div>
+        <div class="geo-cell"><div class="geo-bubble" style="background:rgba(34,211,154,.08);box-shadow:0 0 24px rgba(34,211,154,.1)">🇯🇵</div><div class="g-name">Asia–Pacific</div><div class="g-pct">12%</div><div class="g-eur">€60,000</div></div>
+        <div class="geo-cell"><div class="geo-bubble" style="background:rgba(167,139,250,.08);box-shadow:0 0 24px rgba(167,139,250,.1)">🇬🇧</div><div class="g-name">UK &amp; Nordics</div><div class="g-pct">8%</div><div class="g-eur">€40,000</div></div>
+        <div class="geo-cell"><div class="geo-bubble" style="background:rgba(255,179,71,.08);box-shadow:0 0 24px rgba(255,179,71,.1)">🌏</div><div class="g-name">Emerging Mkts</div><div class="g-pct">8%</div><div class="g-eur">€40,000</div></div>
+        <div class="geo-cell"><div class="geo-bubble" style="background:rgba(255,84,112,.08);box-shadow:0 0 24px rgba(255,84,112,.1)">🇧🇬</div><div class="g-name">Bulgaria &amp; SEE</div><div class="g-pct">4%</div><div class="g-eur">€20,000</div></div>
+      </div>
+    </div>
+
+    <div class="panel glide-panel fade">
+      <div class="p-head">
+        <div><span class="ix">03.5</span>ASSET GLIDE PATH · 2026 → 2041</div>
+        <div class="right">RISK REDUCTION AS RETIREMENT APPROACHES</div>
+      </div>
+      <canvas id="glideChart" height="180"></canvas>
+    </div>
+
+    <div class="panel frontier-panel fade">
+      <div class="p-head">
+        <div><span class="ix">03.6</span>EFFICIENT FRONTIER · MODERN PORTFOLIO THEORY</div>
+        <div class="right">IVAN'S PORTFOLIO ON THE CURVE</div>
+      </div>
+      <canvas id="frontierChart" height="200"></canvas>
+      <div style="padding:8px 18px 14px;font-family:var(--mono);font-size:10px;color:var(--ink-3)">Each dot = a randomly-generated portfolio. <span style="color:var(--acc)">★ Ivan's mandate sits on the efficient frontier</span> — maximum expected return for its level of risk.</div>
+    </div>
+
     <div class="panel fade" style="margin-top:24px;background:linear-gradient(180deg,#0c0e10,#0a0c0e)">
       <div class="p-head">
-        <div><span class="ix">03.4</span>🇧🇬 BULGARIA · EUROZONE CONTEXT</div>
+        <div><span class="ix">03.7</span>🇧🇬 BULGARIA · EUROZONE CONTEXT</div>
         <div class="right">JAN 2026</div>
       </div>
       <div class="p-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
@@ -802,23 +1057,23 @@
           <thead>
             <tr>
               <th>#</th><th>INSTRUMENT</th><th>TICKER</th><th>CLASS</th>
-              <th class="r">WEIGHT</th><th class="r">EUR VALUE</th><th class="r">TER</th><th>RATIONALE</th>
+              <th class="r">WEIGHT</th><th class="r">EUR VALUE</th><th class="r">TER</th><th class="r">LIVE</th><th>RATIONALE</th>
             </tr>
           </thead>
           <tbody>
-            <tr data-c="eq"><td class="num">01</td><td class="nm">iShares MSCI World UCITS ETF</td><td class="tk">IWDA</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">25.0%<span class="wt-bar" style="--w:100%"></span></td><td class="r eur">€125,000</td><td class="r ter">0.20%</td><td class="note">Core diversification — antidote to business concentration</td></tr>
-            <tr data-c="eq"><td class="num">02</td><td class="nm">iShares Core EURO STOXX 50 ETF</td><td class="tk">EXW1</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">10.0%<span class="wt-bar" style="--w:40%"></span></td><td class="r eur">€50,000</td><td class="r ter">0.10%</td><td class="note">Eurozone tilt; aligned with post-accession narrative</td></tr>
-            <tr data-c="eq"><td class="num">03</td><td class="nm">iShares MSCI Emerging Markets ETF</td><td class="tk">EIMI</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">8.0%<span class="wt-bar" style="--w:32%"></span></td><td class="r eur">€40,000</td><td class="r ter">0.18%</td><td class="note">AI/tech tailwinds — aligned with Ivan's IT background</td></tr>
-            <tr data-c="eq"><td class="num">04</td><td class="nm">iShares MSCI World ESG Screened ETF</td><td class="tk">SAWD</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">7.0%<span class="wt-bar" style="--w:28%"></span></td><td class="r eur">€35,000</td><td class="r ter">0.20%</td><td class="note">Honors ESG values — near-zero tracking-error vs. parent index</td></tr>
-            <tr data-c="eq"><td class="num">05</td><td class="nm">Xtrackers MSCI World Info Tech ETF</td><td class="tk">XDWT</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">5.0%<span class="wt-bar" style="--w:20%"></span></td><td class="r eur">€25,000</td><td class="r ter">0.25%</td><td class="note">Tech conviction — capped vs. overconfidence bias</td></tr>
-            <tr data-c="fi"><td class="num">06</td><td class="nm">iShares € Govt Bond 7–10yr ETF</td><td class="tk">IEGY</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">12.0%<span class="wt-bar" style="--w:48%"></span></td><td class="r eur">€60,000</td><td class="r ter">0.09%</td><td class="note">Equity shock absorber — highest-quality EUR safety</td></tr>
-            <tr data-c="fi"><td class="num">07</td><td class="nm">iShares € Corporate Bond ETF</td><td class="tk">IEBC</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">10.0%<span class="wt-bar" style="--w:40%"></span></td><td class="r eur">€50,000</td><td class="r ter">0.20%</td><td class="note">+0.8–1.2% yield premium · 700+ issuers</td></tr>
-            <tr data-c="fi"><td class="num">08</td><td class="nm">iShares € High Yield Corp Bond ETF</td><td class="tk">IHYG</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">5.0%<span class="wt-bar" style="--w:20%"></span></td><td class="r eur">€25,000</td><td class="r ter">0.50%</td><td class="note">Yield accelerator 5–7% · capped at 5%</td></tr>
-            <tr data-c="fi"><td class="num">09</td><td class="nm">Bulgaria Republic Eurobond 3.125% '34</td><td class="tk">BULGAR</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">—</td><td class="note">Patriotic conviction · matures aligned with horizon</td></tr>
-            <tr data-c="fi"><td class="num">10</td><td class="nm">Amundi Euro Short Duration Bond ETF</td><td class="tk">CSH2</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">0.07%</td><td class="note">Duration buffer — shields vs. rate risk</td></tr>
-            <tr data-c="ra"><td class="num">11</td><td class="nm">iShares Global Infrastructure ETF</td><td class="tk">INFR</td><td><span class="cls-pill cls-ra">RA</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">0.65%</td><td class="note">Inflation-linked revenues — familiar to a long-term CEO</td></tr>
-            <tr data-c="ra"><td class="num">12</td><td class="nm">iShares Dev. Markets Property Yield ETF</td><td class="tk">IWDP</td><td><span class="cls-pill cls-ra">RA</span></td><td class="r wt">3.0%<span class="wt-bar" style="--w:12%"></span></td><td class="r eur">€15,000</td><td class="r ter">0.59%</td><td class="note">Liquid REIT exposure — inflation hedge sans illiquidity</td></tr>
-            <tr data-c="ca"><td class="num">13</td><td class="nm">EUR Money Market Fund</td><td class="tk">MMF</td><td><span class="cls-pill cls-ca">CA</span></td><td class="r wt">3.0%<span class="wt-bar" style="--w:12%"></span></td><td class="r eur">€15,000</td><td class="r ter">~0.05%</td><td class="note">Behavioral anchor · prevents panic-selling in volatility</td></tr>
+            <tr data-c="eq" data-tk="IWDA"><td class="num">01</td><td class="nm">iShares MSCI World UCITS ETF</td><td class="tk">IWDA</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">25.0%<span class="wt-bar" style="--w:100%"></span></td><td class="r eur">€125,000</td><td class="r ter">0.20%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-IWDA">+0.34%</span><canvas class="row-spark" id="sp-IWDA" width="60" height="22"></canvas></div></td><td class="note">Core diversification — antidote to business concentration</td></tr>
+            <tr data-c="eq" data-tk="EXW1"><td class="num">02</td><td class="nm">iShares Core EURO STOXX 50 ETF</td><td class="tk">EXW1</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">10.0%<span class="wt-bar" style="--w:40%"></span></td><td class="r eur">€50,000</td><td class="r ter">0.10%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-EXW1">+0.18%</span><canvas class="row-spark" id="sp-EXW1" width="60" height="22"></canvas></div></td><td class="note">Eurozone tilt; aligned with post-accession narrative</td></tr>
+            <tr data-c="eq" data-tk="EIMI"><td class="num">03</td><td class="nm">iShares MSCI Emerging Markets ETF</td><td class="tk">EIMI</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">8.0%<span class="wt-bar" style="--w:32%"></span></td><td class="r eur">€40,000</td><td class="r ter">0.18%</td><td class="r"><div class="spark-cell"><span class="row-chg dn" id="chg-EIMI">−0.22%</span><canvas class="row-spark" id="sp-EIMI" width="60" height="22"></canvas></div></td><td class="note">AI/tech tailwinds — aligned with Ivan's IT background</td></tr>
+            <tr data-c="eq" data-tk="SAWD"><td class="num">04</td><td class="nm">iShares MSCI World ESG Screened ETF <span class="esg-tag">ESG</span></td><td class="tk">SAWD</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">7.0%<span class="wt-bar" style="--w:28%"></span></td><td class="r eur">€35,000</td><td class="r ter">0.20%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-SAWD">+0.41%</span><canvas class="row-spark" id="sp-SAWD" width="60" height="22"></canvas></div></td><td class="note">Honors ESG values — near-zero tracking-error vs. parent index</td></tr>
+            <tr data-c="eq" data-tk="XDWT"><td class="num">05</td><td class="nm">Xtrackers MSCI World Info Tech ETF</td><td class="tk">XDWT</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">5.0%<span class="wt-bar" style="--w:20%"></span></td><td class="r eur">€25,000</td><td class="r ter">0.25%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-XDWT">+0.87%</span><canvas class="row-spark" id="sp-XDWT" width="60" height="22"></canvas></div></td><td class="note">Tech conviction — capped vs. overconfidence bias</td></tr>
+            <tr data-c="fi" data-tk="IEGY"><td class="num">06</td><td class="nm">iShares € Govt Bond 7–10yr ETF</td><td class="tk">IEGY</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">12.0%<span class="wt-bar" style="--w:48%"></span></td><td class="r eur">€60,000</td><td class="r ter">0.09%</td><td class="r"><div class="spark-cell"><span class="row-chg dn" id="chg-IEGY">−0.05%</span><canvas class="row-spark" id="sp-IEGY" width="60" height="22"></canvas></div></td><td class="note">Equity shock absorber — highest-quality EUR safety</td></tr>
+            <tr data-c="fi" data-tk="IEBC"><td class="num">07</td><td class="nm">iShares € Corporate Bond ETF</td><td class="tk">IEBC</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">10.0%<span class="wt-bar" style="--w:40%"></span></td><td class="r eur">€50,000</td><td class="r ter">0.20%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-IEBC">+0.02%</span><canvas class="row-spark" id="sp-IEBC" width="60" height="22"></canvas></div></td><td class="note">+0.8–1.2% yield premium · 700+ issuers</td></tr>
+            <tr data-c="fi" data-tk="IHYG"><td class="num">08</td><td class="nm">iShares € High Yield Corp Bond ETF</td><td class="tk">IHYG</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">5.0%<span class="wt-bar" style="--w:20%"></span></td><td class="r eur">€25,000</td><td class="r ter">0.50%</td><td class="r"><div class="spark-cell"><span class="row-chg dn" id="chg-IHYG">−0.14%</span><canvas class="row-spark" id="sp-IHYG" width="60" height="22"></canvas></div></td><td class="note">Yield accelerator 5–7% · capped at 5%</td></tr>
+            <tr data-c="fi" data-tk="BULGAR34"><td class="num">09</td><td class="nm">Bulgaria Republic Eurobond 3.125% '34</td><td class="tk">BULGAR</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">—</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-BULGAR34">+0.15%</span><canvas class="row-spark" id="sp-BULGAR34" width="60" height="22"></canvas></div></td><td class="note">Patriotic conviction · matures aligned with horizon</td></tr>
+            <tr data-c="fi" data-tk="CSH2"><td class="num">10</td><td class="nm">Amundi Euro Short Duration Bond ETF</td><td class="tk">CSH2</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">0.07%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-CSH2">+0.01%</span><canvas class="row-spark" id="sp-CSH2" width="60" height="22"></canvas></div></td><td class="note">Duration buffer — shields vs. rate risk</td></tr>
+            <tr data-c="ra" data-tk="INFR"><td class="num">11</td><td class="nm">iShares Global Infrastructure ETF</td><td class="tk">INFR</td><td><span class="cls-pill cls-ra">RA</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">0.65%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-INFR">+0.11%</span><canvas class="row-spark" id="sp-INFR" width="60" height="22"></canvas></div></td><td class="note">Inflation-linked revenues — familiar to a long-term CEO</td></tr>
+            <tr data-c="ra" data-tk="IWDP"><td class="num">12</td><td class="nm">iShares Dev. Markets Property Yield ETF</td><td class="tk">IWDP</td><td><span class="cls-pill cls-ra">RA</span></td><td class="r wt">3.0%<span class="wt-bar" style="--w:12%"></span></td><td class="r eur">€15,000</td><td class="r ter">0.59%</td><td class="r"><div class="spark-cell"><span class="row-chg dn" id="chg-IWDP">−0.08%</span><canvas class="row-spark" id="sp-IWDP" width="60" height="22"></canvas></div></td><td class="note">Liquid REIT exposure — inflation hedge sans illiquidity</td></tr>
+            <tr data-c="ca" data-tk="MMF"><td class="num">13</td><td class="nm">EUR Money Market Fund</td><td class="tk">MMF</td><td><span class="cls-pill cls-ca">CA</span></td><td class="r wt">3.0%<span class="wt-bar" style="--w:12%"></span></td><td class="r eur">€15,000</td><td class="r ter">~0.05%</td><td class="r"><div class="spark-cell"><span class="row-chg up" id="chg-MMF">+0.01%</span><canvas class="row-spark" id="sp-MMF" width="60" height="22"></canvas></div></td><td class="note">Behavioral anchor · prevents panic-selling in volatility</td></tr>
           </tbody>
           <tfoot>
             <tr>
@@ -830,6 +1085,51 @@
             </tr>
           </tfoot>
         </table>
+      </div>
+    </div>
+    <div class="panel fade" style="margin-top:24px">
+      <div class="p-head">
+        <div><span class="ix">04.2</span>FACTOR EXPOSURE · RADAR</div>
+        <div class="right">PORTFOLIO vs BENCHMARK</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)">
+        <div class="radar-wrap"><canvas id="radarChart"></canvas></div>
+        <div style="background:var(--bg-1);padding:24px;display:flex;flex-direction:column;justify-content:center;gap:12px">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:8px">FACTOR TILT ANALYSIS</div>
+          <div style="font-size:13px;color:var(--ink-2);line-height:1.6">Ivan's portfolio scores <b style="color:var(--acc)">above benchmark</b> on Quality and ESG, reflecting his emphasis on durable businesses and sustainable investing values.</div>
+          <div style="font-size:13px;color:var(--ink-2);line-height:1.6">Momentum is intentionally <b style="color:var(--ink)">underweight</b> — the IPS annual rebalance mechanically prevents trend-chasing.</div>
+          <div style="display:flex;gap:14px;margin-top:8px;font-family:var(--mono);font-size:10px">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:2px;background:var(--acc);display:inline-block"></span>Portfolio</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:2px;background:var(--ink-3);display:inline-block"></span>Benchmark</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel fade" style="margin-top:24px">
+      <div class="p-head">
+        <div><span class="ix">04.3</span>ESG SCORE BREAKDOWN · PORTFOLIO AGGREGATE</div>
+        <div class="right">MSCI ESG METHODOLOGY</div>
+      </div>
+      <div class="esg-row">
+        <div class="esg-item">
+          <div class="e-lbl">Environment (E)</div>
+          <div class="e-val">72</div>
+          <div class="e-grade">AA — Strong</div>
+          <div class="e-bar"><div class="e-fill" data-w="72"></div></div>
+        </div>
+        <div class="esg-item">
+          <div class="e-lbl">Social (S)</div>
+          <div class="e-val">68</div>
+          <div class="e-grade">A — Good</div>
+          <div class="e-bar"><div class="e-fill" data-w="68" style="background:var(--cyan)"></div></div>
+        </div>
+        <div class="esg-item">
+          <div class="e-lbl">Governance (G)</div>
+          <div class="e-val">76</div>
+          <div class="e-grade">AA — Strong</div>
+          <div class="e-bar"><div class="e-fill" data-w="76" style="background:var(--violet)"></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -871,6 +1171,68 @@
       <div class="rm"><div class="l">MAX DRAWDOWN</div><div class="v dn">−22%</div><div class="s">2008-equivalent shock</div></div>
       <div class="rm"><div class="l">SHARPE RATIO</div><div class="v">~0.60</div><div class="s">vs. 3.0% RF</div></div>
       <div class="rm"><div class="l">BLENDED YIELD</div><div class="v">~2.8%</div><div class="s">income · coupons</div></div>
+    </div>
+
+    <div class="panel fade" style="margin-bottom:36px">
+      <div class="p-head">
+        <div><span class="ix">05.2</span>MONTE CARLO SIMULATION · 300 PATHS · 20 YEARS</div>
+        <div class="right">μ=6.5% · σ=12% · BASE CASE</div>
+      </div>
+      <canvas id="mcChart" height="220" style="padding:14px 18px"></canvas>
+      <div class="mc-meta">
+        <div class="mc-leg"><span class="sw" style="background:rgba(94,234,212,.5)"></span>300 simulation paths</div>
+        <div class="mc-leg"><span class="sw" style="background:var(--acc);height:2px"></span>Median (P50) <span id="mc-p50" style="color:var(--acc)" class="num"></span></div>
+        <div class="mc-leg"><span class="sw" style="background:var(--up);height:2px"></span>Best 10% (P90) <span id="mc-p90" style="color:var(--up)" class="num"></span></div>
+        <div class="mc-leg"><span class="sw" style="background:var(--dn);height:2px"></span>Worst 10% (P10) <span id="mc-p10" style="color:var(--dn)" class="num"></span></div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin-bottom:14px" class="fade">› CRISIS STRESS TEST · CLICK TO SIMULATE</div>
+    <div class="stress-grid fade">
+      <div class="stress-card" data-drop="38" data-recov="36" data-eur="190000">
+        <div class="stress-tag">2008 / GLOBAL FINANCIAL CRISIS</div>
+        <div class="stress-name">Great Financial Crisis</div>
+        <div class="stress-drop">−38%</div>
+        <div class="stress-bar-wrap"><div class="stress-bar-fill"></div></div>
+        <div class="stress-info">
+          <div>Ivan's portfolio: <b style="color:var(--dn)">−€190,000</b></div>
+          <div>Bonds +12% · Cash buffer deployed</div>
+          <div class="s-recov">Recovery: ~36 months → IPS guard holds</div>
+        </div>
+      </div>
+      <div class="stress-card" data-drop="22" data-recov="7" data-eur="110000">
+        <div class="stress-tag">2020 / COVID CRASH</div>
+        <div class="stress-name">Pandemic Shock</div>
+        <div class="stress-drop">−22%</div>
+        <div class="stress-bar-wrap"><div class="stress-bar-fill"></div></div>
+        <div class="stress-info">
+          <div>Ivan's portfolio: <b style="color:var(--dn)">−€110,000</b></div>
+          <div>Fastest-ever recovery (7 months)</div>
+          <div class="s-recov">30-day guard prevented panic sell</div>
+        </div>
+      </div>
+      <div class="stress-card" data-drop="14" data-recov="18" data-eur="70000">
+        <div class="stress-tag">2022 / RATE SHOCK</div>
+        <div class="stress-name">Inflation &amp; Rate Spike</div>
+        <div class="stress-drop">−14%</div>
+        <div class="stress-bar-wrap"><div class="stress-bar-fill"></div></div>
+        <div class="stress-info">
+          <div>Ivan's portfolio: <b style="color:var(--dn)">−€70,000</b></div>
+          <div>Short-duration CSH2 buffered losses</div>
+          <div class="s-recov">INFR +6% · Real assets hedged</div>
+        </div>
+      </div>
+      <div class="stress-card" data-drop="10" data-recov="12" data-eur="50000">
+        <div class="stress-tag">2026 / GEOPOLITICAL</div>
+        <div class="stress-name">Black Swan Event</div>
+        <div class="stress-drop">−10%</div>
+        <div class="stress-bar-wrap"><div class="stress-bar-fill"></div></div>
+        <div class="stress-info">
+          <div>Ivan's portfolio: <b style="color:var(--dn)">−€50,000</b></div>
+          <div>Below IPS −22% max drawdown threshold</div>
+          <div class="s-recov">IPS R04 blackout activated</div>
+        </div>
+      </div>
     </div>
 
     <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin-bottom:14px" class="fade">› MARKET SCENARIOS / 1Y</div>
@@ -983,6 +1345,29 @@
         <div class="d">IPS amended only for fundamental life changes — never market noise.</div>
       </div>
     </div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin:48px 0 14px" class="fade">› BEHAVIORAL FINANCE QUIZ · TEST YOUR DISCIPLINE</div>
+    <div class="quiz-panel fade" id="quiz-panel">
+      <div class="quiz-q" id="quiz-question-area">
+        <div class="quiz-num" id="quiz-num">QUESTION 1 / 5</div>
+        <div class="quiz-text" id="quiz-text"></div>
+        <div class="quiz-opts" id="quiz-opts"></div>
+        <div class="quiz-reveal" id="quiz-reveal">
+          <div class="bias-id" id="quiz-bias"></div>
+          <div id="quiz-explain"></div>
+          <div class="ips-ref" id="quiz-ips"></div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <div class="quiz-score-txt">Score: <b id="quiz-score">0</b> / <span id="quiz-total">5</span></div>
+        <button class="quiz-next-btn" id="quiz-next" disabled>NEXT QUESTION →</button>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin:0 0 14px" class="fade">› ROLLING DRAWDOWN · MAY 2020 → APR 2026</div>
+    <div class="panel fade">
+      <div class="p-head"><div><span class="ix">05.6</span>PORTFOLIO DRAWDOWN vs IPS LIMIT</div><div class="right">−22% MAX THRESHOLD</div></div>
+      <canvas id="ddChart" height="150"></canvas>
+    </div>
   </div>
 </section>
 
@@ -1090,6 +1475,32 @@
         </div>
       </div>
     </div>
+    <div class="panel fade" style="margin-top:28px">
+      <div class="p-head">
+        <div><span class="ix">06.4</span>TAX EFFICIENCY · BULGARIA FLAT 10%</div>
+        <div class="right">GROSS vs NET · 15-YEAR HORIZON</div>
+      </div>
+      <div class="tax-grid">
+        <div class="tax-item">
+          <div class="t-lbl">Gross final value</div>
+          <div class="t-val t-accent">€1,254,700</div>
+          <div class="t-sub">€500k × (1+6.5%)^15<br>Pre-tax compound growth</div>
+        </div>
+        <div class="tax-item">
+          <div class="t-lbl">Net after BG 10% tax</div>
+          <div class="t-val">€1,129,200</div>
+          <div class="t-sub">Tax deferred on growth<br>Single realisation at exit</div>
+        </div>
+        <div class="tax-item">
+          <div class="t-lbl">Annual tax drag (avg)</div>
+          <div class="t-val" style="color:var(--dn)">−€8,400</div>
+          <div class="t-sub">UCITS structure defers tax<br>vs annual realisation: save <span class="t-accent">~€42k</span></div>
+        </div>
+      </div>
+      <div style="padding:16px 22px;font-family:var(--mono);font-size:11px;color:var(--ink-3);line-height:1.7;border-top:1px solid var(--line)">
+        UCITS ETFs held long-term benefit from Bulgaria's 10% flat capital-gains tax applied only at realisation. Deferring tax until exit vs. annually realising gains saves approximately <span style="color:var(--acc)">€42,000</span> over 15 years on the €500k mandate — equivalent to 8.4% of starting capital.
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1181,7 +1592,7 @@ function buildTicker(){
 buildTicker();
 setInterval(()=>{
   tk.forEach(t=>{const d=(Math.random()-.5)*0.3;t.p=Math.max(.5,+(t.p+d).toFixed(t.p<10?4:2));t.c=+(t.c+(Math.random()-.5)*0.05).toFixed(2)});
-  buildTicker();
+  (window.buildTicker||buildTicker)();
 },5000);
 
 // LIVE NAV + SPARKLINE
@@ -1374,6 +1785,519 @@ const obs=new IntersectionObserver(es=>{
 document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
 // Fallback: reveal any remaining hidden elements after 2s (handles observer edge cases)
 setTimeout(()=>document.querySelectorAll('.fade:not(.in)').forEach(revealEl),2000);
+
+// ─── BOOT SEQUENCE ───
+(function(){
+  const lines=['bl0','bl1','bl2','bl3','bl4','bl5'];
+  lines.forEach((id,i)=>setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.add('vis');
+  },300+i*280));
+  setTimeout(()=>{
+    const boot=document.getElementById('boot');
+    boot.classList.add('out');
+    setTimeout(()=>boot.style.display='none',750);
+  },300+lines.length*280+400);
+})();
+
+// ─── SCROLL PROGRESS ───
+const prog=document.getElementById('scroll-prog');
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight)*100;
+  prog.style.width=Math.min(100,pct)+'%';
+},{passive:true});
+
+// ─── SIDE NAV ───
+(function(){
+  const sections=['summary','profile','allocation','holdings','risk','implementation','conclusion'];
+  const navItems=document.querySelectorAll('.sn-item');
+  const sObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navItems.forEach(n=>n.classList.remove('active'));
+        const match=document.querySelector(`.sn-item[data-sid="${e.target.id}"]`);
+        if(match)match.classList.add('active');
+      }
+    });
+  },{threshold:0.25});
+  sections.forEach(id=>{const el=document.getElementById(id);if(el)sObs.observe(el);});
+  navItems.forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault();
+    const id=a.dataset.sid;
+    const el=document.getElementById(id);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  }));
+})();
+
+// ─── COMMAND PALETTE ───
+(function(){
+  const overlay=document.getElementById('cmd-overlay');
+  const inp=document.getElementById('cmd-inp');
+  const list=document.getElementById('cmd-list');
+  const cmds=[
+    {ci:'§01',ct:'Executive Summary',cd:'Overview & KPIs',sid:'summary'},
+    {ci:'§02',ct:'Client Profile & IPS',cd:'Dossier + Rules',sid:'profile'},
+    {ci:'§03',ct:'Asset Allocation',cd:'Sliders + Charts',sid:'allocation'},
+    {ci:'§04',ct:'Portfolio Construction',cd:'13 Holdings',sid:'holdings'},
+    {ci:'§05',ct:'Risk & Behavioral Firewall',cd:'Monte Carlo + Quiz',sid:'risk'},
+    {ci:'§06',ct:'Implementation & Monitoring',cd:'Timeline + Tax',sid:'implementation'},
+    {ci:'§07',ct:'Conclusion',cd:'Graham quote + Refs',sid:'conclusion'},
+    {ci:'⌘',ct:'Print / Export PDF',cd:'window.print()',action:()=>window.print()},
+    {ci:'↺',ct:'Reset Allocation',cd:'IPS Optimal',action:()=>{document.getElementById('resetBtn').click()}},
+  ];
+  let sel=0,filtered=cmds;
+  function render(q=''){
+    filtered=cmds.filter(c=>!q||c.ct.toLowerCase().includes(q.toLowerCase())||c.cd.toLowerCase().includes(q.toLowerCase()));
+    sel=0;
+    list.innerHTML=filtered.map((c,i)=>`<div class="cmd-item${i===0?' sel':''}" data-i="${i}"><span class="ci">${c.ci}</span><span class="ct">${c.ct}</span><span class="cd">${c.cd}</span></div>`).join('');
+    list.querySelectorAll('.cmd-item').forEach((el,i)=>el.addEventListener('click',()=>go(i)));
+  }
+  function go(i){
+    const c=filtered[i];
+    if(!c)return;
+    if(c.action)c.action();
+    else if(c.sid){const s=document.getElementById(c.sid);if(s)s.scrollIntoView({behavior:'smooth',block:'start'});}
+    close();
+  }
+  function open(){overlay.classList.add('open');inp.value='';render();setTimeout(()=>inp.focus(),50);}
+  function close(){overlay.classList.remove('open');}
+  function open_toggle(){overlay.classList.contains('open')?close():open();}
+  overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+  inp.addEventListener('input',()=>{render(inp.value);});
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){sel=Math.min(sel+1,filtered.length-1);}
+    else if(e.key==='ArrowUp'){sel=Math.max(sel-1,0);}
+    else if(e.key==='Enter'){go(sel);return;}
+    else if(e.key==='Escape'){close();return;}
+    list.querySelectorAll('.cmd-item').forEach((el,i)=>el.classList.toggle('sel',i===sel));
+    const selEl=list.querySelector('.cmd-item.sel');
+    if(selEl)selEl.scrollIntoView({block:'nearest'});
+  });
+  document.addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();open_toggle();}
+  });
+  render();
+})();
+
+// ─── KEYBOARD SECTION JUMPS (G + 1-7) ───
+(function(){
+  const map={'1':'summary','2':'profile','3':'allocation','4':'holdings','5':'risk','6':'implementation','7':'conclusion'};
+  let lastKey='',lastTime=0;
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+    const now=Date.now();
+    if(lastKey==='g'&&now-lastTime<1200&&map[e.key]){
+      const el=document.getElementById(map[e.key]);
+      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+      lastKey='';return;
+    }
+    lastKey=e.key.toLowerCase();lastTime=now;
+  });
+})();
+
+// ─── LIVE EUR/USD ───
+(function(){
+  let rate=1.0942;
+  const el=document.getElementById('eurusd-val');
+  setInterval(()=>{rate+=((Math.random()-.5)*0.004);rate=Math.max(1.04,Math.min(1.15,rate));if(el)el.textContent=rate.toFixed(4);},8000);
+})();
+
+// ─── ANIMATED KPI COUNTERS ───
+function countUp(el,target,duration,prefix,suffix){
+  const start=performance.now();
+  const from=0;
+  function step(now){
+    const p=Math.min((now-start)/duration,1);
+    const val=Math.round(from+p*(target-from));
+    el.textContent=(prefix||'')+val.toLocaleString('de-DE')+(suffix||'');
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+const kpiCells=document.querySelectorAll('.exec-cell .v');
+const kpiObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    kpiObs.unobserve(e.target);
+  });
+},{threshold:0.5});
+kpiCells.forEach(el=>kpiObs.observe(el));
+
+// ─── PERFORMANCE CHART (§01) ───
+(function(){
+  const months=['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
+  const base=100;
+  let pf=[100],bm=[100];
+  for(let i=1;i<12;i++){
+    pf.push(+(pf[i-1]*(1+(0.006+(Math.random()-.42)*0.025))).toFixed(3));
+    bm.push(+(bm[i-1]*(1+(0.0048+(Math.random()-.45)*0.022))).toFixed(3));
+  }
+  try{
+    const ctx=document.getElementById('perfChart').getContext('2d');
+    new Chart(ctx,{
+      type:'line',
+      data:{
+        labels:months,
+        datasets:[
+          {label:'Ivan Petrov Portfolio',data:pf,borderColor:'#5eead4',backgroundColor:'rgba(94,234,212,.06)',borderWidth:2,pointRadius:0,pointHoverRadius:5,fill:true,tension:.35},
+          {label:'Benchmark 60/40',data:bm,borderColor:'#6b7280',borderWidth:1.5,borderDash:[4,4],pointRadius:0,pointHoverRadius:5,fill:false,tension:.35},
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:c=>` ${c.dataset.label} · ${(c.raw-100).toFixed(2)}%`},backgroundColor:'#000',titleColor:'#5eead4',titleFont:{family:'JetBrains Mono',size:11,weight:'600'},bodyFont:{family:'JetBrains Mono',size:11},padding:12,borderColor:'#262a30',borderWidth:1,cornerRadius:3}
+        },
+        scales:{
+          x:{grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10}}},
+          y:{grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10},callback:v=>(v-100).toFixed(1)+'%'}}
+        }
+      }
+    });
+  }catch(e){console.warn('Perf chart:',e)}
+})();
+
+// ─── IPS SCORECARD ───
+function updateIPS(eq,fi,ra,ca){
+  const rules=[
+    {id:'sc-r01',pass:true},
+    {id:'sc-r02',pass:eq<=25&&fi<=25&&ra<=25&&ca<=25},
+    {id:'sc-r03',pass:Math.abs(eq-55)<=5&&Math.abs(fi-35)<=5},
+    {id:'sc-r04',pass:true},
+    {id:'sc-r05',pass:true},
+    {id:'sc-r06',pass:true},
+  ];
+  rules.forEach(r=>{
+    const el=document.getElementById(r.id);
+    if(!el)return;
+    const drift=r.id==='sc-r03'&&!r.pass;
+    el.className='ips-badge '+(r.pass?'pass':drift?'monitor':'breach');
+    el.textContent=r.pass?'PASS':drift?'MONITOR':'BREACH';
+  });
+}
+(function(){
+  ['sl-eq','sl-fi','sl-ra'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',()=>{
+      const eq=+document.getElementById('sl-eq').value;
+      const fi=+document.getElementById('sl-fi').value;
+      const ra=+document.getElementById('sl-ra').value;
+      const ca=Math.max(0,100-eq-fi-ra);
+      updateIPS(eq,fi,ra,ca);
+    });
+  });
+  document.getElementById('resetBtn').addEventListener('click',()=>updateIPS(55,35,7,3));
+  updateIPS(55,35,7,3);
+})();
+
+// ─── GLIDE PATH CHART (§03) ───
+(function(){
+  const years=Array.from({length:16},(_,i)=>2026+i);
+  const eq=years.map((_,i)=>Math.max(40,55-i));
+  const fi=years.map((_,i)=>Math.min(50,35+i));
+  const ra=years.map(()=>7);
+  const ca=years.map((_,i)=>Math.min(100-eq[i]-fi[i]-ra[i],3+Math.round(i/5)));
+  try{
+    const ctx=document.getElementById('glideChart').getContext('2d');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:years,datasets:[
+        {label:'Equities',data:eq,backgroundColor:'rgba(94,234,212,.25)',borderColor:'#5eead4',borderWidth:1.5,fill:true,tension:.3,pointRadius:0},
+        {label:'Fixed Income',data:fi,backgroundColor:'rgba(95,209,255,.2)',borderColor:'#5fd1ff',borderWidth:1.5,fill:true,tension:.3,pointRadius:0},
+        {label:'Real Assets',data:ra,backgroundColor:'rgba(255,179,71,.15)',borderColor:'#ffb347',borderWidth:1.5,fill:true,tension:.3,pointRadius:0},
+        {label:'Cash',data:ca,backgroundColor:'rgba(64,70,82,.3)',borderColor:'#404652',borderWidth:1,fill:true,tension:.3,pointRadius:0},
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label} · ${c.raw}%`},backgroundColor:'#000',titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},padding:10,cornerRadius:3,borderColor:'#262a30',borderWidth:1}},
+        scales:{
+          x:{stacked:true,grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10}}},
+          y:{stacked:true,min:0,max:100,grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10},callback:v=>v+'%'}}
+        }
+      }
+    });
+  }catch(e){console.warn('Glide chart:',e)}
+})();
+
+// ─── EFFICIENT FRONTIER (§03) ───
+(function(){
+  const rng=()=>Math.random();
+  const pts=Array.from({length:45},()=>({x:+(4+rng()*14).toFixed(2),y:+(1+rng()*9).toFixed(2)}));
+  pts.push({x:8.2,y:6.5,r:10,label:'IVAN'});
+  try{
+    const ctx=document.getElementById('frontierChart').getContext('2d');
+    new Chart(ctx,{
+      type:'scatter',
+      data:{datasets:[
+        {label:'Portfolios',data:pts.slice(0,-1),backgroundColor:'rgba(94,234,212,.15)',borderColor:'rgba(94,234,212,.3)',pointRadius:4,pointHoverRadius:6},
+        {label:'Ivan\'s Mandate',data:[{x:8.2,y:6.5}],backgroundColor:'#5eead4',borderColor:'#5eead4',pointRadius:10,pointHoverRadius:12,pointStyle:'star'},
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:c=>c.datasetIndex===1?'★ Ivan — Risk: 8.2% · Return: 6.5%':` Risk: ${c.raw.x}% · Return: ${c.raw.y}%`},backgroundColor:'#000',titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},padding:10,cornerRadius:3,borderColor:'#262a30',borderWidth:1}
+        },
+        scales:{
+          x:{title:{display:true,text:'Risk (σ %)',color:'#6b7280',font:{family:'JetBrains Mono',size:10}},grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10}}},
+          y:{title:{display:true,text:'Return (μ %)',color:'#6b7280',font:{family:'JetBrains Mono',size:10}},grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10}}}
+        }
+      }
+    });
+  }catch(e){console.warn('Frontier chart:',e)}
+})();
+
+// ─── FACTOR RADAR (§04) ───
+(function(){
+  try{
+    const ctx=document.getElementById('radarChart').getContext('2d');
+    new Chart(ctx,{
+      type:'radar',
+      data:{
+        labels:['Value','Growth','Quality','Momentum','Low Vol','ESG'],
+        datasets:[
+          {label:'Ivan Portfolio',data:[62,58,74,45,68,72],backgroundColor:'rgba(94,234,212,.1)',borderColor:'#5eead4',borderWidth:2,pointBackgroundColor:'#5eead4',pointRadius:4},
+          {label:'Benchmark',data:[55,60,62,58,60,55],backgroundColor:'rgba(107,114,128,.08)',borderColor:'#6b7280',borderWidth:1.5,borderDash:[4,4],pointBackgroundColor:'#6b7280',pointRadius:3},
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#000',titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},padding:10,cornerRadius:3,borderColor:'#262a30',borderWidth:1}},
+        scales:{r:{backgroundColor:'rgba(0,0,0,0)',grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:9},backdropColor:'transparent',stepSize:20},pointLabels:{color:'#a8afb8',font:{family:'JetBrains Mono',size:10}},min:0,max:100}}
+      }
+    });
+  }catch(e){console.warn('Radar:',e)}
+})();
+
+// ─── ESG BAR ANIMATION ───
+const esgObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.querySelectorAll('.e-fill').forEach(f=>setTimeout(()=>f.style.width=f.dataset.w+'%',200));
+    esgObs.unobserve(e.target);
+  });
+},{threshold:0.3});
+document.querySelectorAll('.esg-row').forEach(el=>esgObs.observe(el));
+
+// ─── HOLDINGS SPARKLINES ───
+const sparkData={};
+const sparkObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    drawAllSparks();
+    sparkObs.disconnect();
+  });
+},{threshold:0.1});
+const htblEl=document.getElementById('hTable');
+if(htblEl)sparkObs.observe(htblEl);
+
+function initSparkData(){
+  tk.forEach(t=>{
+    const hist=Array.from({length:20},()=>t.p*(1+(Math.random()-.5)*0.015));
+    hist.push(t.p);
+    sparkData[t.n]=hist;
+  });
+}
+initSparkData();
+
+function drawRowSpark(tkName,price){
+  const canvas=document.getElementById('sp-'+tkName);
+  if(!canvas)return;
+  const hist=sparkData[tkName];
+  if(!hist)return;
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const min=Math.min(...hist),max=Math.max(...hist),range=max-min||0.001;
+  const pts=hist.map((v,i)=>({x:(i/(hist.length-1))*w,y:h-((v-min)/range)*(h-4)-2}));
+  const isUp=hist[hist.length-1]>=hist[0];
+  const col=isUp?'#22d39a':'#ff5470';
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.stroke();
+}
+function drawAllSparks(){tk.forEach(t=>drawRowSpark(t.n,t.p));}
+drawAllSparks();
+
+// Update sparklines + row % change on each ticker tick
+const origBuildTicker=buildTicker;
+function buildTickerAndSparks(){
+  origBuildTicker();
+  tk.forEach(t=>{
+    const hist=sparkData[t.n];
+    if(hist){hist.push(t.p);hist.shift();}
+    drawRowSpark(t.n,t.p);
+    const chgEl=document.getElementById('chg-'+t.n);
+    if(chgEl){
+      const up=t.c>=0;
+      chgEl.className='row-chg '+(up?'up':'dn');
+      chgEl.textContent=(up?'+':'')+t.c.toFixed(2)+'%';
+    }
+  });
+}
+
+// ─── MONTE CARLO (§05) ───
+(function(){
+  const canvas=document.getElementById('mcChart');
+  if(!canvas)return;
+  const PATHS=300,YEARS=20,START=500000,MU=0.065,SIGMA=0.12;
+  function randn(){
+    let u=0,v=0;
+    while(!u)u=Math.random();
+    while(!v)v=Math.random();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  }
+  const allPaths=[];
+  for(let p=0;p<PATHS;p++){
+    const path=[START];
+    for(let y=1;y<=YEARS;y++){
+      const ret=MU+SIGMA*randn();
+      path.push(Math.max(0,path[y-1]*(1+ret)));
+    }
+    allPaths.push(path);
+  }
+  const finals=allPaths.map(p=>p[YEARS]).sort((a,b)=>a-b);
+  const p10=finals[Math.floor(PATHS*0.1)];
+  const p50=finals[Math.floor(PATHS*0.5)];
+  const p90=finals[Math.floor(PATHS*0.9)];
+  document.getElementById('mc-p10').textContent='€'+(p10/1e6).toFixed(2)+'M';
+  document.getElementById('mc-p50').textContent='€'+(p50/1e6).toFixed(2)+'M';
+  document.getElementById('mc-p90').textContent='€'+(p90/1e6).toFixed(2)+'M';
+  const mcObs=new IntersectionObserver(entries=>{
+    if(!entries[0].isIntersecting)return;
+    mcObs.disconnect();
+    const w=canvas.offsetWidth||canvas.parentElement.offsetWidth||800;
+    canvas.width=w;canvas.height=220;
+    const ctx=canvas.getContext('2d');
+    const maxV=Math.max(...allPaths.map(p=>Math.max(...p)))*0.85;
+    const xS=w/YEARS,yS=(canvas.height-24)/maxV;
+    allPaths.forEach(path=>{
+      ctx.beginPath();
+      ctx.moveTo(0,canvas.height-path[0]*yS);
+      for(let i=1;i<=YEARS;i++)ctx.lineTo(i*xS,canvas.height-path[i]*yS);
+      ctx.strokeStyle='rgba(94,234,212,0.04)';ctx.lineWidth=1;ctx.stroke();
+    });
+    [[allPaths.find(p=>p[YEARS]===finals[Math.floor(PATHS*0.9)]),'#22d39a',2],
+     [allPaths.find(p=>Math.abs(p[YEARS]-p50)<50000),'#5eead4',2.5],
+     [allPaths.find(p=>p[YEARS]===finals[Math.floor(PATHS*0.1)]),'#ff5470',2]].forEach(([path,col,lw])=>{
+       if(!path)return;
+       ctx.beginPath();ctx.moveTo(0,canvas.height-path[0]*yS);
+       for(let i=1;i<=YEARS;i++)ctx.lineTo(i*xS,canvas.height-path[i]*yS);
+       ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.stroke();
+     });
+    ctx.fillStyle='#6b7280';ctx.font='9px JetBrains Mono';
+    for(let i=0;i<=YEARS;i+=5){if(i===0)continue;ctx.fillText(2026+i,i*xS-10,canvas.height-4);}
+  },{threshold:0.1});
+  mcObs.observe(canvas);
+})();
+
+// ─── STRESS TEST ───
+document.querySelectorAll('.stress-card').forEach(card=>{
+  const fill=card.querySelector('.stress-bar-fill');
+  const pct=+card.dataset.drop;
+  const stressObs=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){setTimeout(()=>{fill.style.width=Math.min(100,pct*2.5)+'%';},300);stressObs.disconnect();}
+  },{threshold:0.5});
+  stressObs.observe(card);
+  card.addEventListener('click',()=>{
+    document.querySelectorAll('.stress-card').forEach(c=>c.classList.remove('active'));
+    card.classList.add('active');
+  });
+});
+
+// ─── BEHAVIORAL QUIZ ───
+(function(){
+  const qs=[
+    {q:"Markets dropped 18% last week. Ivan's portfolio is down €90,000. What does the IPS require?",opts:["A · Sell bonds to lock in remaining gains","B · Wait 30 days before any strategic changes","C · Immediately buy more equities to average down"],correct:1,bias:"BIAS DETECTED: Loss Aversion",explain:"Fear of further loss triggers panic selling — the most expensive behavioral mistake in investing.",ips:"IPS R04 · 30-day blackout after >10% market decline"},
+    {q:"AI stocks returned +65% last year. Should Ivan raise XDWT (tech ETF) from 5% to 20%?",opts:["A · Yes — the AI trend is structural and clear","B · Wait for one more year of outperformance","C · No — IPS caps any single sector at 5%, regardless of performance"],correct:2,bias:"BIAS DETECTED: Recency Bias + Overconfidence",explain:"Extrapolating last year's winners into the future — and assuming domain expertise — is a documented behavioral trap.",ips:"IPS · No sector > 5% of portfolio · XDWT hard-capped"},
+    {q:"A Bulgarian colleague recommends investing in a promising local tech startup. Should Ivan proceed?",opts:["A · Yes — local knowledge is a genuine edge","B · Maybe — if the expected return exceeds the IPS hurdle","C · No — the IPS restricts the universe to UCITS ETFs and listed bonds only"],correct:2,bias:"BIAS DETECTED: Home Bias",explain:"Local familiarity feels like knowledge, but Bulgarian domestic assets are already represented via BULGAR (4%). Further concentration undermines global diversification.",ips:"IPS R05 · UCITS and listed bonds only — no unlisted assets"},
+    {q:"IWDA was purchased at €88. It now trades at €82. Ivan wants to hold until it returns to breakeven.",opts:["A · Reasonable — €88 is the true intrinsic value","B · Rebalance based on target weights — cost price is irrelevant to the system","C · Sell and realise the loss before it falls further"],correct:1,bias:"BIAS DETECTED: Anchoring",explain:"The IPS rebalances to percentage target weights, not to purchase prices. The portfolio is deliberately indifferent to what was paid.",ips:"IPS R03 · Weight-based rebalancing — cost price is ignored"},
+    {q:"It has been 18 months since Ivan's last portfolio review. The IPS specifies quarterly reviews. What now?",opts:["A · Nothing — the portfolio is performing well","B · Conduct a major rebalancing based on current market outlook","C · Schedule a formal review immediately, following IPS cadence"],correct:2,bias:"BIAS DETECTED: Status Quo Bias",explain:"Skipping reviews lets drift accumulate silently. The quarterly cadence exists precisely to catch small drifts before they become large ones.",ips:"IPS R06 · Formal quarterly review · annual IPS update 30 Apr"},
+  ];
+  let qi=0,score=0;
+  function render(){
+    const q=qs[qi];
+    document.getElementById('quiz-num').textContent=`QUESTION ${qi+1} / ${qs.length}`;
+    document.getElementById('quiz-text').textContent=q.q;
+    document.getElementById('quiz-total').textContent=qs.length;
+    document.getElementById('quiz-score').textContent=score;
+    const reveal=document.getElementById('quiz-reveal');
+    reveal.classList.remove('show');
+    const nextBtn=document.getElementById('quiz-next');
+    nextBtn.disabled=true;
+    nextBtn.textContent=qi<qs.length-1?'NEXT QUESTION →':'FINISH';
+    const opts=document.getElementById('quiz-opts');
+    opts.innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" data-i="${i}"><span class="ok">${String.fromCharCode(65+i)}</span>${o.slice(2)}</button>`).join('');
+    opts.querySelectorAll('.quiz-opt').forEach(btn=>btn.addEventListener('click',function(){
+      const chosen=+this.dataset.i;
+      opts.querySelectorAll('.quiz-opt').forEach(b=>{b.disabled=true;});
+      if(chosen===q.correct){this.classList.add('correct');score++;}
+      else{this.classList.add('wrong');opts.querySelectorAll('.quiz-opt')[q.correct].classList.add('correct');}
+      document.getElementById('quiz-score').textContent=score;
+      document.getElementById('quiz-bias').textContent=q.bias;
+      document.getElementById('quiz-explain').textContent=q.explain;
+      document.getElementById('quiz-ips').textContent=q.ips;
+      reveal.classList.add('show');
+      nextBtn.disabled=false;
+    }));
+  }
+  document.getElementById('quiz-next').addEventListener('click',()=>{
+    qi++;
+    if(qi>=qs.length){
+      document.getElementById('quiz-question-area').innerHTML=`<div style="padding:40px;text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.16em;margin-bottom:16px">QUIZ COMPLETE</div><div style="font-family:var(--mono);font-size:40px;color:var(--ink);font-weight:300;margin-bottom:12px">${score}/${qs.length}</div><div style="color:var(--ink-2);font-size:14px">${score===5?'Perfect — Ivan\'s IPS is internalized!':score>=3?'Strong discipline. Review the missed questions with Ivan.':'More practice needed. Revisit the IPS rules.'}</div></div>`;
+      document.getElementById('quiz-next').style.display='none';
+    }else render();
+  });
+  render();
+})();
+
+// ─── DRAWDOWN CHART ───
+(function(){
+  const months=['May\'20','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'21','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'22','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'23','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'24','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'26','Feb','Mar','Apr'];
+  const drawdowns=[-3.2,-8.4,-18.1,-22.0,-12.4,-6.2,-2.1,-0.8,-1.2,-2.8,-3.4,-1.1,-0.5,-1.8,-3.2,-2.1,-1.4,-0.8,-2.1,-4.2,-6.8,-9.4,-11.2,-13.8,-10.2,-7.4,-5.1,-3.8,-3.2,-4.8,-6.2,-8.4,-5.2,-3.1,-2.4,-1.8,-1.2,-0.9,-1.4,-2.1,-2.8,-3.4,-2.1,-1.4,-0.8,-0.5,-1.2,-1.8,-2.4,-1.8,-1.2,-0.8,-0.5,-0.8,-1.2,-0.9,-0.6,-1.4,-1.8,-1.2,-0.8,-0.5,-0.4,-0.8,-1.2,-0.9,-0.6,-0.4,-0.8,-1.2];
+  const trimmed=drawdowns.slice(0,months.length);
+  try{
+    const ctx=document.getElementById('ddChart').getContext('2d');
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:months.slice(0,trimmed.length),datasets:[
+        {label:'Drawdown',data:trimmed,borderColor:'#ff5470',backgroundColor:ctx2=>{const g=ctx2.chart.ctx.createLinearGradient(0,0,0,150);g.addColorStop(0,'rgba(255,84,112,.2)');g.addColorStop(1,'rgba(255,84,112,0)');return g;},borderWidth:1.5,fill:true,tension:.3,pointRadius:0},
+        {label:'IPS Limit −22%',data:trimmed.map(()=>-22),borderColor:'#ffb347',borderWidth:1,borderDash:[6,4],pointRadius:0,fill:false},
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw}%`},backgroundColor:'#000',titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:11},padding:10,cornerRadius:3,borderColor:'#262a30',borderWidth:1}
+        },
+        scales:{
+          x:{grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:9},maxTicksLimit:8}},
+          y:{max:2,min:-25,grid:{color:'#1a1d22'},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10},callback:v=>v+'%'}}
+        }
+      }
+    });
+  }catch(e){console.warn('DD chart:',e)}
+})();
+
+// ─── RIPPLE EFFECT ───
+function addRipple(el){
+  el.classList.add('ripple-host');
+  el.addEventListener('click',function(e){
+    const r=document.createElement('span');
+    r.className='ripple-el';
+    const rect=el.getBoundingClientRect();
+    const size=Math.max(rect.width,rect.height);
+    r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+    el.appendChild(r);
+    setTimeout(()=>r.remove(),600);
+  });
+}
+document.querySelectorAll('.exec-cell,.kpi-cell,.scen,.goal').forEach(addRipple);
+
+// Override buildTicker to also update sparklines
+window.buildTicker=buildTickerAndSparks;
 </script>
 </body>
 </html>
