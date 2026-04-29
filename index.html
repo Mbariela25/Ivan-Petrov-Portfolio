@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IPP/2026 — Ivan Petrov Portfolio Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#070809;
+    --bg-1:#0b0d10;
+    --bg-2:#101317;
+    --line:#1a1d22;
+    --line-2:#262a30;
+    --ink:#e9ecef;
+    --ink-2:#a8afb8;
+    --ink-3:#6b7280;
+    --ink-4:#404652;
+    --acc:#5eead4;
+    --acc-dim:#2dd4bf;
+    --up:#22d39a;
+    --dn:#ff5470;
+    --warn:#ffb347;
+    --violet:#a78bfa;
+    --cyan:#5fd1ff;
+    --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:'Geist', system-ui, -apple-system, sans-serif;
+    --serif:'Instrument Serif', Georgia, serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:80px 80px;
+    opacity:.35;
+    mask-image:radial-gradient(ellipse 100% 80% at 50% 30%,#000 30%,transparent 100%);
+  }
+  body::after{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:2;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgba(94,234,212,.06), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 30%, rgba(95,209,255,.04), transparent 60%);
+  }
+
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .mono{font-family:var(--mono)}
+  .serif{font-family:var(--serif);font-style:italic}
+  .uc{text-transform:uppercase;letter-spacing:.18em}
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(7,8,9,.85);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+    height:42px;
+    display:flex;align-items:center;
+    padding:0 20px;
+    font-family:var(--mono);
+    font-size:11px;
+  }
+  .tb-logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);margin-right:24px}
+  .tb-logo-mark{
+    width:22px;height:22px;background:var(--acc);color:#000;
+    display:grid;place-items:center;font-weight:800;font-size:10px;
+    border-radius:3px;box-shadow:0 0 14px rgba(94,234,212,.35);
+  }
+  .tb-logo-text{letter-spacing:.18em}
+  .tb-logo-text span{color:var(--ink-3)}
+  .tb-clock{color:var(--ink-2);margin-right:16px;display:flex;align-items:center;gap:8px}
+  .tb-clock::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--up);box-shadow:0 0 8px var(--up);
+    animation:pulse 1.6s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .tb-divider{width:1px;height:14px;background:var(--line-2);margin:0 12px}
+  .tb-cmd{flex:1;color:var(--ink-3);display:flex;align-items:center;gap:10px;overflow:hidden}
+  .tb-cmd-prompt{color:var(--acc)}
+  .tb-cmd-text{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .tb-status{display:flex;align-items:center;gap:14px;color:var(--ink-3)}
+  .tb-status .ok{color:var(--up)}
+  .tb-kbd{border:1px solid var(--line-2);padding:2px 6px;border-radius:3px;color:var(--ink-2);font-size:10px}
+
+  /* TICKER */
+  .ticker{
+    height:32px;border-bottom:1px solid var(--line);background:#000;
+    display:flex;align-items:center;overflow:hidden;
+    font-family:var(--mono);font-size:11px;position:relative;z-index:5;
+  }
+  .ticker-label{
+    background:#000;color:var(--acc);padding:0 14px;height:100%;
+    display:flex;align-items:center;gap:8px;border-right:1px solid var(--line);
+    font-weight:700;letter-spacing:.2em;flex-shrink:0;font-size:10px;
+  }
+  .ticker-label::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--acc);box-shadow:0 0 8px var(--acc);animation:pulse 1.6s infinite;
+  }
+  .ticker-track{flex:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+  .ticker-inner{display:flex;animation:scroll 60s linear infinite;white-space:nowrap;width:max-content}
+  .ticker-inner:hover{animation-play-state:paused}
+  .ticker-item{display:inline-flex;align-items:center;gap:10px;padding:0 22px;color:var(--ink-2)}
+  .ticker-item .tk{color:var(--ink);font-weight:600}
+  .ticker-item .tp{color:var(--ink-3)}
+  .ticker-item .tc.up{color:var(--up)}
+  .ticker-item .tc.dn{color:var(--dn)}
+  .ticker-item .tc::before{content:'▲ ';font-size:8px}
+  .ticker-item .tc.dn::before{content:'▼ '}
+  @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* HERO */
+  .hero{position:relative;padding:60px 32px 40px;border-bottom:1px solid var(--line);z-index:3}
+  .hero-grid{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1fr 460px;gap:48px;align-items:start}
+  @media(max-width:1080px){.hero-grid{grid-template-columns:1fr}}
+  .hero-meta{
+    display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10px;
+    color:var(--ink-3);margin-bottom:28px;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .hero-meta .dot{width:4px;height:4px;background:var(--ink-4);border-radius:50%}
+  .hero-meta .live{color:var(--acc);display:flex;align-items:center;gap:6px}
+  .hero-meta .live::before{content:'';width:5px;height:5px;background:var(--acc);border-radius:50%;box-shadow:0 0 8px var(--acc);animation:pulse 1.6s infinite}
+  .hero h1{font-family:var(--sans);font-size:clamp(48px,7vw,96px);font-weight:300;line-height:.95;letter-spacing:-.04em;margin-bottom:8px}
+  .hero h1 b{font-weight:700}
+  .hero h1 .em{font-family:var(--serif);font-weight:400;color:var(--acc);font-style:italic}
+  .hero-sub{color:var(--ink-2);font-size:15px;line-height:1.6;max-width:560px;margin-top:20px}
+  .hero-sub b{color:var(--ink);font-weight:500}
+  .hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+  .tag{border:1px solid var(--line-2);padding:5px 11px;border-radius:3px;font-family:var(--mono);font-size:10px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.12em}
+  .tag.acc{border-color:var(--acc-dim);color:var(--acc);background:rgba(94,234,212,.04)}
+
+  /* KPI PANEL */
+  .kpi-panel{border:1px solid var(--line);background:linear-gradient(180deg,var(--bg-1),var(--bg));border-radius:6px;overflow:hidden;position:relative}
+  .kpi-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 100% 0%, rgba(94,234,212,.05), transparent 50%);pointer-events:none}
+  .kpi-head{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em}
+  .kpi-head .left{display:flex;gap:6px;align-items:center}
+  .kpi-head .left::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:pulse 1.6s infinite}
+  .kpi-main{padding:24px 20px;border-bottom:1px solid var(--line)}
+  .kpi-main .lbl{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:6px}
+  .kpi-main .val{font-family:var(--mono);font-size:48px;font-weight:300;color:var(--ink);letter-spacing:-.03em;line-height:1}
+  .kpi-main .val .cents{color:var(--ink-3);font-size:24px}
+  .kpi-main .delta{margin-top:10px;display:flex;gap:14px;align-items:center;font-family:var(--mono);font-size:12px}
+  .kpi-main .delta .pos{color:var(--up)}
+  .kpi-main .delta .label{color:var(--ink-3)}
+  .kpi-spark{height:54px;width:100%;display:block}
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr)}
+  .kpi-cell{padding:14px 18px;border-bottom:1px solid var(--line)}
+  .kpi-cell:nth-child(odd){border-right:1px solid var(--line)}
+  .kpi-cell:nth-last-child(-n+2){border-bottom:none}
+  .kpi-cell .l{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:4px}
+  .kpi-cell .v{font-family:var(--mono);font-size:18px;color:var(--ink);font-weight:500}
+  .kpi-cell .v small{color:var(--ink-3);font-size:11px;margin-left:4px}
+
+  /* SECTION SHELL */
+  section.s{position:relative;z-index:3;padding:80px 32px;border-bottom:1px solid var(--line)}
+  .container{max-width:1440px;margin:0 auto}
+  .s-head{display:grid;grid-template-columns:auto 1fr auto;align-items:end;gap:32px;margin-bottom:40px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .s-num{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:.18em}
+  .s-title{font-family:var(--sans);font-size:clamp(28px,3.6vw,44px);font-weight:300;letter-spacing:-.03em;line-height:1.05}
+  .s-title b{font-weight:600}
+  .s-title em{font-family:var(--serif);font-style:italic;color:var(--ink-2);font-weight:400}
+  .s-side{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;text-align:right;line-height:1.6}
+  .s-side .v{color:var(--ink);font-size:13px;letter-spacing:0;display:block;margin-top:4px}
+
+  /* PANEL */
+  .panel{border:1px solid var(--line);background:var(--bg-1);border-radius:6px;overflow:hidden}
+  .p-head{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.18em}
+  .p-head .ix{color:var(--ink-3);margin-right:8px}
+  .p-head .right{display:flex;gap:14px;align-items:center;color:var(--ink-3)}
+  .p-body{padding:22px}
+
+  /* EXEC GRID */
+  .exec-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg-1)}
+  @media(max-width:980px){.exec-grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:600px){.exec-grid{grid-template-columns:repeat(2,1fr)}}
+  .exec-cell{padding:24px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+  .exec-cell:nth-child(6n){border-right:none}
+  .exec-cell:nth-last-child(-n+6){border-bottom:none}
+  @media(max-width:980px){
+    .exec-cell{border-right:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important}
+    .exec-cell:nth-child(3n){border-right:none!important}
+  }
+  .exec-cell .l{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .exec-cell .l .ix{color:var(--ink-4)}
+  .exec-cell .v{font-family:var(--mono);font-size:26px;font-weight:400;color:var(--ink);letter-spacing:-.02em;line-height:1.05}
+  .exec-cell .vs{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:8px}
+  .exec-cell .v .acc{color:var(--acc)}
+
+  /* PROFILE */
+  .prof-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  @media(max-width:920px){.prof-grid{grid-template-columns:1fr}}
+  .prof-card{background:var(--bg-1);padding:0}
+  .prof-rows{padding:6px 22px 22px}
+  .prof-row{display:grid;grid-template-columns:140px 1fr;padding:11px 0;border-bottom:1px dashed var(--line-2);font-size:13px;align-items:start}
+  .prof-row:last-child{border:none}
+  .prof-row .k{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.14em;padding-top:2px}
+  .prof-row .vv{color:var(--ink);font-size:13px;line-height:1.55}
+  .prof-row .vv b{color:var(--ink);font-weight:600}
+  .ips-list{padding:6px 22px 22px;display:flex;flex-direction:column;gap:0}
+  .ips-row{display:grid;grid-template-columns:32px 1fr;padding:14px 0;align-items:start;border-bottom:1px dashed var(--line-2);gap:12px}
+  .ips-row:last-child{border:none}
+  .ips-row .n{font-family:var(--mono);font-size:10px;color:var(--acc);font-weight:600;letter-spacing:.06em;padding-top:2px}
+  .ips-row .t{color:var(--ink-2);font-size:13px;line-height:1.55}
+  .ips-row .t b{color:var(--ink);font-weight:500}
+  .goals-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-top:none;border-radius:0 0 6px 6px;overflow:hidden;background:var(--bg-1);margin-top:-1px}
+  @media(max-width:820px){.goals-strip{grid-template-columns:1fr}}
+  .goal{padding:24px;border-right:1px solid var(--line);position:relative}
+  .goal:last-child{border-right:none}
+  @media(max-width:820px){
+    .goal{border-right:none;border-bottom:1px solid var(--line)}
+    .goal:last-child{border-bottom:none}
+  }
+  .goal .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:14px}
+  .goal .badge::before{content:'';width:6px;height:6px;background:var(--acc);box-shadow:0 0 6px var(--acc)}
+  .goal .ttl{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:8px;line-height:1.2}
+  .goal .desc{color:var(--ink-2);font-size:13px;line-height:1.55}
+
+  /* ALLOCATION */
+  .alloc-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  @media(max-width:1000px){.alloc-grid{grid-template-columns:1fr}}
+  .ring-wrap{background:var(--bg-1);padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-height:520px}
+  .ring-wrap::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at center, transparent 30%, rgba(94,234,212,.02) 31%, transparent 32%),radial-gradient(circle at center, transparent 50%, rgba(94,234,212,.02) 51%, transparent 52%);pointer-events:none}
+  .ring-canvas-wrap{position:relative;width:340px;height:340px}
+  #allocChart{position:relative;z-index:2}
+  .ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:3}
+  .ring-center .l{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
+  .ring-center .v{font-family:var(--mono);font-size:36px;color:var(--ink);font-weight:300;letter-spacing:-.03em}
+  .ring-center .s{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:4px}
+  .ring-legend{margin-top:36px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:6px}
+  .lg-row{display:grid;grid-template-columns:14px 1fr auto auto;gap:14px;align-items:center;font-family:var(--mono);font-size:12px;padding:8px 4px;border-bottom:1px dashed var(--line-2)}
+  .lg-row:last-child{border:none}
+  .lg-sw{width:10px;height:10px;border-radius:2px}
+  .lg-row .ln{color:var(--ink);font-size:12px}
+  .lg-row .lp{color:var(--ink-2);text-align:right;min-width:48px}
+  .lg-row .le{color:var(--ink-3);text-align:right;min-width:80px;font-size:11px}
+  .sliders{background:var(--bg-1);padding:0}
+  .slider-rows{padding:18px 24px 12px}
+  .sl-row{padding:14px 0;border-bottom:1px dashed var(--line-2)}
+  .sl-row:last-child{border:none}
+  .sl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .sl-name{font-family:var(--mono);font-size:11px;color:var(--ink);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:8px}
+  .sl-name .sw{width:8px;height:8px;border-radius:2px}
+  .sl-vals{font-family:var(--mono);font-size:13px;color:var(--ink);display:flex;gap:16px;align-items:baseline}
+  .sl-vals .eur{color:var(--ink-3);font-size:11px}
+  .sl-track{position:relative;height:24px;display:flex;align-items:center}
+  .sl-track input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--line-2);outline:none;cursor:pointer;border-radius:0}
+  .sl-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:12px;height:18px;background:var(--acc);border-radius:1px;cursor:grab;box-shadow:0 0 12px rgba(94,234,212,.4)}
+  .sl-track input[type=range]::-moz-range-thumb{width:12px;height:18px;background:var(--acc);border:none;border-radius:1px;cursor:grab}
+  .sl-track .ticks{position:absolute;inset:0;display:flex;justify-content:space-between;pointer-events:none}
+  .sl-track .ticks span{width:1px;height:6px;background:var(--line-2);align-self:flex-end}
+  .sl-foot{padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#0a0c0e;font-family:var(--mono);font-size:11px}
+  .sl-foot .total{color:var(--ink-2)}
+  .sl-foot .total b{color:var(--acc)}
+  .sl-foot .total.warn b{color:var(--warn)}
+  .reset{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);padding:6px 12px;border-radius:3px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;cursor:pointer;transition:.2s}
+  .reset:hover{border-color:var(--acc);color:var(--acc)}
+
+  /* PROJECTION */
+  .proj-panel{margin-top:20px}
+  .proj-meta{display:flex;gap:20px;flex-wrap:wrap;padding:10px 18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px}
+  .proj-meta .leg{display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+  .proj-meta .leg .sw{width:18px;height:2px;border-radius:0}
+  .proj-meta .leg .dv{color:var(--ink-3);margin-left:8px}
+  #projChart{padding:14px 18px;max-height:200px}
+
+  /* HOLDINGS */
+  .holdings-toolbar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--bg-1);flex-wrap:wrap;gap:12px}
+  .filters{display:flex;gap:6px;flex-wrap:wrap}
+  .filter{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);padding:6px 12px;border-radius:3px;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;cursor:pointer;transition:.15s}
+  .filter:hover{border-color:var(--ink-2);color:var(--ink)}
+  .filter.active{border-color:var(--acc);color:var(--acc);background:rgba(94,234,212,.05)}
+  .filter span{color:var(--ink-3);margin-left:6px;font-size:9.5px}
+  .filter.active span{color:var(--acc)}
+  .holdings-search{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+  .holdings-search input{background:transparent;border:1px solid var(--line);color:var(--ink);padding:6px 10px;font-family:var(--mono);font-size:11px;border-radius:3px;outline:none;width:200px}
+  .holdings-search input:focus{border-color:var(--acc)}
+  .htbl-wrap{overflow-x:auto;background:var(--bg-1)}
+  table.htbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;min-width:920px}
+  table.htbl th{text-align:left;color:var(--ink-3);font-weight:500;font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--bg-1);position:sticky;top:0}
+  table.htbl th.r{text-align:right}
+  table.htbl td{padding:14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
+  table.htbl tbody tr{transition:background .15s}
+  table.htbl tbody tr:hover{background:#0e1114}
+  table.htbl tbody tr:hover td{color:var(--ink)}
+  table.htbl td.r{text-align:right}
+  table.htbl td.tk{color:var(--ink);font-weight:600}
+  table.htbl td.nm{color:var(--ink);font-weight:500;font-family:var(--sans);font-size:13px}
+  table.htbl td.wt{color:var(--ink);font-size:13px}
+  table.htbl td.eur{color:var(--ink-2)}
+  table.htbl td.ter{color:var(--ink-3)}
+  table.htbl td.note{color:var(--ink-3);font-family:var(--sans);font-size:12px}
+  table.htbl tfoot td{background:#0c0e11;color:var(--ink);font-weight:600;border-top:1px solid var(--line-2);border-bottom:none}
+  table.htbl tfoot td.acc{color:var(--acc)}
+  .cls-pill{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;border-radius:2px;border:1px solid var(--line-2)}
+  .cls-eq{color:var(--cyan);border-color:rgba(95,209,255,.3)}
+  .cls-fi{color:var(--up);border-color:rgba(34,211,154,.3)}
+  .cls-ra{color:var(--warn);border-color:rgba(255,179,71,.3)}
+  .cls-ca{color:var(--ink-3);border-color:var(--line-2)}
+  .wt-bar{display:inline-block;width:60px;height:3px;background:var(--line-2);margin-left:10px;vertical-align:middle;position:relative}
+  .wt-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:var(--acc);width:var(--w)}
+
+  /* RISK / CALC */
+  .calc-panel{margin-bottom:28px}
+  .calc-body{display:grid;grid-template-columns:1fr 2fr;gap:0;background:var(--line)}
+  @media(max-width:920px){.calc-body{grid-template-columns:1fr}}
+  .calc-controls{background:var(--bg-1);padding:24px}
+  .calc-results{background:var(--line);padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:1px}
+  @media(max-width:600px){.calc-results{grid-template-columns:1fr}}
+  .calc-controls .lbl{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:8px}
+  .calc-input{width:100%;padding:14px 16px;background:#000;border:1px solid var(--line-2);color:var(--ink);font-family:var(--mono);font-size:22px;font-weight:300;border-radius:3px;outline:none;margin-bottom:24px}
+  .calc-input:focus{border-color:var(--acc)}
+  .horizons{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .h-btn{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);padding:9px 14px;border-radius:3px;font-family:var(--mono);font-size:11px;cursor:pointer;transition:.15s;flex:1}
+  .h-btn:hover{border-color:var(--ink-2);color:var(--ink)}
+  .h-btn.active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+  .calc-result{background:var(--bg-1);padding:20px 22px;position:relative}
+  .calc-result .l{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .calc-result .l::before{content:'';width:6px;height:6px;border-radius:50%}
+  .calc-result.bull .l::before{background:var(--up);box-shadow:0 0 6px var(--up)}
+  .calc-result.base .l::before{background:var(--cyan)}
+  .calc-result.bear .l::before{background:var(--dn)}
+  .calc-result.infl .l::before{background:var(--warn)}
+  .calc-result.bull .l{color:var(--up)}
+  .calc-result.base .l{color:var(--cyan)}
+  .calc-result.bear .l{color:var(--dn)}
+  .calc-result.infl .l{color:var(--warn)}
+  .calc-result .v{font-family:var(--mono);font-size:30px;color:var(--ink);font-weight:300;letter-spacing:-.03em}
+  .calc-result .g{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:6px}
+
+  .risk-metrics{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg-1);margin-bottom:36px}
+  @media(max-width:880px){.risk-metrics{grid-template-columns:repeat(2,1fr)}}
+  .rm{padding:20px 22px;border-right:1px solid var(--line)}
+  .rm:last-child{border-right:none}
+  @media(max-width:880px){
+    .rm{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .rm:nth-child(2n){border-right:none}
+  }
+  .rm .l{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px}
+  .rm .v{font-family:var(--mono);font-size:22px;color:var(--ink);font-weight:400;letter-spacing:-.02em}
+  .rm .v.dn{color:var(--dn)}
+  .rm .s{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:4px}
+
+  .scen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--line)}
+  @media(max-width:920px){.scen-grid{grid-template-columns:repeat(2,1fr)}}
+  .scen{background:var(--bg-1);padding:24px;position:relative;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .scen:last-child{border-right:none}
+  .scen-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .scen-tag{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em}
+  .scen.bull .scen-tag{color:var(--up)}
+  .scen.base .scen-tag{color:var(--cyan)}
+  .scen.bear .scen-tag{color:var(--dn)}
+  .scen.infl .scen-tag{color:var(--warn)}
+  .scen-prob{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+  .scen-ret{font-family:var(--mono);font-size:34px;font-weight:300;letter-spacing:-.03em;color:var(--ink);margin-bottom:8px;line-height:1}
+  .scen.bear .scen-ret{color:var(--dn)}
+  .scen-trig{font-size:12px;color:var(--ink-3);line-height:1.55;margin-bottom:14px;min-height:36px}
+  .scen-impact{font-family:var(--mono);font-size:11.5px;padding-top:14px;border-top:1px dashed var(--line-2);color:var(--ink-2)}
+
+  .bias-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  @media(max-width:1100px){.bias-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.bias-grid{grid-template-columns:1fr}}
+  .bias{background:var(--bg-1);padding:22px;cursor:pointer;position:relative;transition:background .2s;min-height:240px;display:flex;flex-direction:column}
+  .bias:hover{background:#0e1114}
+  .bias .num{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.16em;margin-bottom:24px}
+  .bias .nm{font-family:var(--serif);font-size:24px;color:var(--ink);line-height:1.1;margin-bottom:12px}
+  .bias .desc{font-size:12.5px;color:var(--ink-2);line-height:1.55;flex:1}
+  .bias .fix{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-2);font-family:var(--mono);font-size:10.5px;color:var(--acc);display:flex;align-items:center;gap:8px;transition:.2s}
+  .bias .fix::before{content:'▸';color:var(--acc)}
+  .bias.flipped .desc{display:none}
+  .bias.flipped .fix-content{display:block}
+  .bias .fix-content{display:none;flex:1}
+  .bias .fix-content .lbl{font-family:var(--mono);font-size:10px;color:var(--acc);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px}
+  .bias .fix-content .txt{font-size:12.5px;color:var(--ink);line-height:1.55;margin-bottom:14px}
+  .bias .fix-content .rule{font-family:var(--mono);font-size:10px;color:var(--ink-3);border-left:2px solid var(--acc);padding-left:10px}
+
+  .rules-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:36px}
+  @media(max-width:900px){.rules-grid{grid-template-columns:repeat(2,1fr)}}
+  .rule{background:var(--bg-1);padding:24px}
+  .rule .n{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.16em;margin-bottom:14px}
+  .rule .t{font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:8px}
+  .rule .d{font-size:12.5px;color:var(--ink-3);line-height:1.55}
+
+  /* IMPLEMENTATION */
+  .impl-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  @media(max-width:920px){.impl-grid{grid-template-columns:1fr}}
+  .impl-panel{background:var(--bg-1);padding:0}
+  .impl-panel-body{padding:22px}
+  .phase{display:flex;gap:18px;padding:18px 0;border-bottom:1px dashed var(--line-2)}
+  .phase:last-child{border:none}
+  .phase .pn{font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:.06em;min-width:48px;padding-top:2px}
+  .phase .pt{font-family:var(--sans);font-size:14px;color:var(--ink);font-weight:500;margin-bottom:6px}
+  .phase .pd{font-size:12.5px;color:var(--ink-3);line-height:1.55}
+  .phase .pn b{font-family:var(--mono);font-size:18px;color:var(--ink);font-weight:500;display:block;margin-top:2px}
+  .bench-row{display:grid;grid-template-columns:1fr 60px;align-items:center;gap:16px;padding:14px 0;border-bottom:1px dashed var(--line-2)}
+  .bench-row:last-child{border:none}
+  .bench-info{display:flex;flex-direction:column;gap:8px}
+  .bench-name{font-family:var(--mono);font-size:11px;color:var(--ink);text-transform:uppercase;letter-spacing:.1em}
+  .bench-bar{height:4px;background:var(--line-2);border-radius:0;overflow:hidden;position:relative}
+  .bench-fill{height:100%;background:var(--acc);width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+  .bench-fill.alt{background:var(--cyan)}
+  .bench-fill.alt2{background:var(--ink-3)}
+  .bench-pct{font-family:var(--mono);font-size:14px;color:var(--ink);text-align:right}
+  .timeline{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg-1);margin-top:28px}
+  .tl-row{display:grid;grid-template-columns:130px 1fr;gap:24px;align-items:start;padding:24px 28px;border-bottom:1px solid var(--line);position:relative}
+  .tl-row:last-child{border:none}
+  .tl-row .yr{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:.16em;text-transform:uppercase;padding-top:4px}
+  .tl-row .yr b{display:block;font-size:18px;color:var(--ink);margin-top:4px;font-weight:400;letter-spacing:-.02em}
+  .tl-row .body{padding-left:24px;border-left:1px solid var(--line);position:relative}
+  .tl-row .body::before{content:'';position:absolute;left:-5px;top:6px;width:9px;height:9px;background:var(--acc);border-radius:50%;box-shadow:0 0 10px var(--acc)}
+  .tl-row .ttl{font-family:var(--sans);font-size:16px;color:var(--ink);font-weight:500;margin-bottom:6px}
+  .tl-row .desc{font-size:13px;color:var(--ink-2);line-height:1.6}
+
+  /* CONCLUSION */
+  .conc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:28px}
+  @media(max-width:920px){.conc-grid{grid-template-columns:1fr}}
+  .conc-text{background:var(--bg-1);padding:36px}
+  .conc-text p{color:var(--ink-2);font-size:14.5px;line-height:1.75;margin-bottom:18px}
+  .conc-text p:last-child{margin-bottom:0}
+  .conc-text p b{color:var(--ink);font-weight:500}
+  .conc-text .pillar{display:inline-block;border-bottom:1px solid var(--acc);color:var(--ink);font-weight:500}
+  .quote{background:#000;padding:48px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+  .quote::before{content:'';position:absolute;top:-100px;right:-50px;width:300px;height:300px;background:radial-gradient(circle, rgba(94,234,212,.06), transparent 70%);pointer-events:none}
+  .quote .qm{font-family:var(--serif);font-size:80px;color:var(--acc);line-height:.5;margin-bottom:24px}
+  .quote q{font-family:var(--serif);font-size:24px;line-height:1.4;color:var(--ink);quotes:none;display:block;margin-bottom:20px}
+  .quote q::before,.quote q::after{content:''}
+  .quote cite{font-family:var(--mono);font-size:11px;color:var(--acc);text-transform:uppercase;letter-spacing:.18em;font-style:normal}
+  .refs{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg-1)}
+  .refs-list{display:grid;grid-template-columns:repeat(2,1fr);counter-reset:r}
+  @media(max-width:780px){.refs-list{grid-template-columns:1fr}}
+  .refs-list li{list-style:none;padding:14px 22px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.55;display:flex;gap:12px;counter-increment:r}
+  .refs-list li:nth-child(2n){border-right:none}
+  .refs-list li::before{content:'[' counter(r,decimal-leading-zero) ']';color:var(--acc);font-weight:600;flex-shrink:0}
+  .refs-list li em{color:var(--ink-2);font-style:normal}
+
+  footer{padding:32px;border-top:1px solid var(--line);background:var(--bg);color:var(--ink-3);font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;text-transform:uppercase;letter-spacing:.16em}
+  footer .l{color:var(--ink)}
+  footer .r{display:flex;gap:24px}
+
+  .fade{opacity:0;transform:translateY(14px);transition:opacity .7s ease, transform .7s ease}
+  .fade.in{opacity:1;transform:none}
+
+  @media(max-width:680px){
+    .hero{padding:40px 20px 30px}
+    section.s{padding:60px 20px}
+    .topbar{padding:0 14px;font-size:10px;height:38px}
+    .tb-cmd{display:none}
+    .s-head{grid-template-columns:1fr;gap:10px}
+    .s-side{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-mark">IP</div>
+    <div class="tb-logo-text">IPP<span>/2026</span></div>
+  </div>
+  <div class="tb-clock" id="tbClock">SOFIA · 14:32:08 EET</div>
+  <div class="tb-divider"></div>
+  <div class="tb-cmd">
+    <span class="tb-cmd-prompt">›</span>
+    <span class="tb-cmd-text" id="tbCmd">portfolio --client="Ivan Petrov" --capital=€500,000 --horizon=12-20yr --status=ACTIVE</span>
+  </div>
+  <div class="tb-status">
+    <span class="ok">● MARKETS_OPEN</span>
+    <span class="tb-divider"></span>
+    <span>EUR/USD 1.0942</span>
+    <span class="tb-divider"></span>
+    <span>v1.0 · <span class="tb-kbd">⌘K</span></span>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-label">LIVE/PFL</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="tickerInner"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-meta">
+        <span>SECTION 00</span>
+        <span class="dot"></span>
+        <span>YOUNG INVESTOR HACKATHON · SMG FINANCE CLUB</span>
+        <span class="dot"></span>
+        <span class="live">SESSION LIVE</span>
+      </div>
+      <h1>
+        Ivan Petrov<br/>
+        <span class="em">portfolio</span> <b>terminal.</b>
+      </h1>
+      <p class="hero-sub">
+        A disciplined, behavioral-finance-aware <b>€500,000</b> mandate for a 48-year-old Sofia entrepreneur — <b>13 UCITS instruments</b>, blended cost <b>0.22% p.a.</b>, designed to compound quietly across a 12–20 year horizon.
+      </p>
+      <div class="hero-tags">
+        <span class="tag acc">● Active</span>
+        <span class="tag">Moderate risk</span>
+        <span class="tag">EUR-denominated</span>
+        <span class="tag">UCITS-compliant</span>
+        <span class="tag">Rules-based · IPS-anchored</span>
+        <span class="tag">Eurozone · Jan 2026</span>
+      </div>
+    </div>
+    <div class="kpi-panel">
+      <div class="kpi-head">
+        <div class="left">PORTFOLIO · LIVE</div>
+        <div>NAV · APR 29 14:32 EET</div>
+      </div>
+      <div class="kpi-main">
+        <div class="lbl">Net asset value</div>
+        <div class="val"><span id="navVal">500,000</span><span class="cents">.00</span> €</div>
+        <div class="delta">
+          <span class="pos" id="navDelta">+€1,247 · +0.25%</span>
+          <span class="label">SINCE OPEN</span>
+        </div>
+        <svg class="kpi-spark" id="kpiSpark" viewBox="0 0 400 60" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-cell"><div class="l">Target IRR</div><div class="v">+6.5<small>% p.a.</small></div></div>
+        <div class="kpi-cell"><div class="l">Volatility</div><div class="v">9–11<small>%</small></div></div>
+        <div class="kpi-cell"><div class="l">Max DD</div><div class="v" style="color:var(--dn)">−22<small>%</small></div></div>
+        <div class="kpi-cell"><div class="l">Sharpe</div><div class="v">~0.60</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §01 EXECUTIVE SUMMARY -->
+<section class="s" id="summary">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 01 / 07</div>
+      <div class="s-title">Executive <em>summary</em></div>
+      <div class="s-side">DOC · IPP-26-001<span class="v">CONFIDENTIAL</span></div>
+    </div>
+    <div class="exec-grid fade">
+      <div class="exec-cell">
+        <div class="l"><span>TOTAL CAPITAL</span><span class="ix">01</span></div>
+        <div class="v">€500,000</div>
+        <div class="vs">Hypothetical mandate</div>
+      </div>
+      <div class="exec-cell">
+        <div class="l"><span>TARGET RETURN</span><span class="ix">02</span></div>
+        <div class="v">+6.0–6.5<span class="acc">%</span></div>
+        <div class="vs">Inflation + 3% p.a.</div>
+      </div>
+      <div class="exec-cell">
+        <div class="l"><span>RISK PROFILE</span><span class="ix">03</span></div>
+        <div class="v">Moderate</div>
+        <div class="vs">Max drawdown −22%</div>
+      </div>
+      <div class="exec-cell">
+        <div class="l"><span>HORIZON</span><span class="ix">04</span></div>
+        <div class="v">12–20 yr</div>
+        <div class="vs">Retirement 2038–2041</div>
+      </div>
+      <div class="exec-cell">
+        <div class="l"><span>CURRENCY</span><span class="ix">05</span></div>
+        <div class="v">EUR</div>
+        <div class="vs">Post-Eurozone, Jan 2026</div>
+      </div>
+      <div class="exec-cell">
+        <div class="l"><span>BLENDED TER</span><span class="ix">06</span></div>
+        <div class="v">0.22<span class="acc">%</span></div>
+        <div class="vs">13 UCITS instruments</div>
+      </div>
+    </div>
+    <div class="panel fade" style="margin-top:28px">
+      <div class="p-head">
+        <div><span class="ix">01.1</span>THESIS</div>
+        <div class="right"><span>4 ASSET CLASSES</span><span>·</span><span>13 INSTRUMENTS</span></div>
+      </div>
+      <div class="p-body">
+        <p style="font-family:var(--serif);font-size:22px;line-height:1.5;color:var(--ink);margin-bottom:18px;font-style:normal">
+          Ivan Petrov's wealth is dangerously concentrated in <span style="color:var(--acc)">Petrov Dynamics Ltd.</span> — an IT services firm of 140 employees. This portfolio is the <em style="color:var(--ink-2)">counterweight</em> to that risk.
+        </p>
+        <p style="color:var(--ink-2);font-size:14px;line-height:1.7">
+          €500,000 is deployed across <b style="color:var(--ink)">four asset classes and thirteen UCITS-compliant instruments</b> to diversify business concentration, fund his children's education, and build a retirement fully independent of the company's future trajectory. Every allocation decision is governed by a written Investment Policy Statement that explicitly counters five documented behavioral biases.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §02 PROFILE -->
+<section class="s" id="profile">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 02 / 07</div>
+      <div class="s-title">Client profile <em>&amp; IPS</em></div>
+      <div class="s-side">PERSONA · IPP-26-002<span class="v">SOFIA, BG</span></div>
+    </div>
+    <div class="prof-grid fade">
+      <div class="prof-card">
+        <div class="p-head"><div><span class="ix">02.1</span>CLIENT DOSSIER</div><div class="right">VERIFIED</div></div>
+        <div class="prof-rows">
+          <div class="prof-row"><div class="k">Name</div><div class="vv"><b>Ivan Petrov</b></div></div>
+          <div class="prof-row"><div class="k">Age</div><div class="vv">48 · Sofia, Bulgaria</div></div>
+          <div class="prof-row"><div class="k">Company</div><div class="vv">Petrov Dynamics Ltd. — IT services &amp; digital transformation, 140 employees, est. 2009</div></div>
+          <div class="prof-row"><div class="k">Net worth</div><div class="vv">≈ €1.2 million</div></div>
+          <div class="prof-row"><div class="k">Income</div><div class="vv">€120,000 – €150,000 / yr</div></div>
+          <div class="prof-row"><div class="k">Family</div><div class="vv">Married · daughter, 21 (Finance) · son, 16 (Sofia Math HS · Finance Club)</div></div>
+          <div class="prof-row"><div class="k">Values</div><div class="vv">ESG investing · youth financial literacy · Bulgaria's Eurozone success</div></div>
+          <div class="prof-row"><div class="k">Tax</div><div class="vv">Bulgarian flat 10% · UCITS in Ireland / Luxembourg</div></div>
+        </div>
+      </div>
+      <div class="prof-card">
+        <div class="p-head"><div><span class="ix">02.2</span>IPS · CORE RULES</div><div class="right">RULES-BASED</div></div>
+        <div class="ips-list">
+          <div class="ips-row"><div class="n">R01</div><div class="t"><b>Target return:</b> exceed Euro inflation by ≥ 3% p.a. on rolling 5-year basis</div></div>
+          <div class="ips-row"><div class="n">R02</div><div class="t"><b>Concentration:</b> no single instrument may exceed 25% of portfolio at purchase</div></div>
+          <div class="ips-row"><div class="n">R03</div><div class="t"><b>Rebalancing:</b> 30 April annually + auto-trigger at ±5% asset class drift</div></div>
+          <div class="ips-row"><div class="n">R04</div><div class="t"><b>Behavioral guard:</b> no strategic changes within 30 days of a market decline &gt; 10%</div></div>
+          <div class="ips-row"><div class="n">R05</div><div class="t"><b>Universe:</b> UCITS ETFs and listed bonds only — no derivatives, crypto, unlisted</div></div>
+          <div class="ips-row"><div class="n">R06</div><div class="t"><b>Review cadence:</b> formal quarterly review · annual IPS update on 30 Apr</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="goals-strip fade">
+      <div class="goal">
+        <div class="badge">PRIMARY GOAL</div>
+        <div class="ttl">Retirement security</div>
+        <div class="desc">Build a portfolio that sustains a comfortable Sofia retirement from <b style="color:var(--ink)">2038–2041</b>, fully independent of Petrov Dynamics Ltd.</div>
+      </div>
+      <div class="goal">
+        <div class="badge">SECONDARY</div>
+        <div class="ttl">Children's education</div>
+        <div class="desc">Ring-fence <b style="color:var(--ink)">€60–80k</b> for daughter's postgrad (2–3 yr) and son's university (~5 yr). The portfolio is itself an educational tool.</div>
+      </div>
+      <div class="goal">
+        <div class="badge">TERTIARY</div>
+        <div class="ttl">Legacy &amp; values</div>
+        <div class="desc">Leave a meaningful inheritance modeling responsible long-term investing — consistent with public commitment to youth financial literacy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §03 ALLOCATION -->
+<section class="s" id="allocation">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 03 / 07</div>
+      <div class="s-title">Asset <em>allocation</em></div>
+      <div class="s-side">INTERACTIVE · drag sliders<span class="v">LIVE-LINKED</span></div>
+    </div>
+    <div class="alloc-grid fade">
+      <div class="ring-wrap">
+        <div class="p-head" style="position:absolute;top:0;left:0;right:0;border-bottom:1px solid var(--line);background:var(--bg-1)">
+          <div><span class="ix">03.1</span>WEIGHTING · DOUGHNUT</div>
+          <div class="right"><span id="ringTotal">100% · BALANCED</span></div>
+        </div>
+        <div class="ring-canvas-wrap">
+          <canvas id="allocChart" width="340" height="340"></canvas>
+          <div class="ring-center">
+            <div class="l">Total mandate</div>
+            <div class="v">€500K</div>
+            <div class="s">EUR · 100%</div>
+          </div>
+        </div>
+        <div class="ring-legend">
+          <div class="lg-row"><div class="lg-sw" style="background:#5eead4"></div><div class="ln">Equities</div><div class="lp" id="lg-eq-p">55%</div><div class="le" id="lg-eq-e">€275,000</div></div>
+          <div class="lg-row"><div class="lg-sw" style="background:#5fd1ff"></div><div class="ln">Fixed Income</div><div class="lp" id="lg-fi-p">35%</div><div class="le" id="lg-fi-e">€175,000</div></div>
+          <div class="lg-row"><div class="lg-sw" style="background:#ffb347"></div><div class="ln">Real Assets</div><div class="lp" id="lg-ra-p">7%</div><div class="le" id="lg-ra-e">€35,000</div></div>
+          <div class="lg-row"><div class="lg-sw" style="background:#404652"></div><div class="ln">Cash</div><div class="lp" id="lg-ca-p">3%</div><div class="le" id="lg-ca-e">€15,000</div></div>
+        </div>
+      </div>
+      <div class="sliders">
+        <div class="p-head"><div><span class="ix">03.2</span>ADJUST WEIGHTS</div><div class="right">DRAG TO MODEL</div></div>
+        <div class="slider-rows">
+          <div class="sl-row">
+            <div class="sl-head">
+              <div class="sl-name"><span class="sw" style="background:#5eead4"></span>EQUITIES</div>
+              <div class="sl-vals"><span id="sl-eq-pct">55%</span><span class="eur" id="sl-eq-eur">€275,000</span></div>
+            </div>
+            <div class="sl-track">
+              <input type="range" id="sl-eq" min="20" max="80" value="55"/>
+              <div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-head">
+              <div class="sl-name"><span class="sw" style="background:#5fd1ff"></span>FIXED INCOME</div>
+              <div class="sl-vals"><span id="sl-fi-pct">35%</span><span class="eur" id="sl-fi-eur">€175,000</span></div>
+            </div>
+            <div class="sl-track">
+              <input type="range" id="sl-fi" min="5" max="60" value="35"/>
+              <div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-head">
+              <div class="sl-name"><span class="sw" style="background:#ffb347"></span>REAL ASSETS</div>
+              <div class="sl-vals"><span id="sl-ra-pct">7%</span><span class="eur" id="sl-ra-eur">€35,000</span></div>
+            </div>
+            <div class="sl-track">
+              <input type="range" id="sl-ra" min="0" max="20" value="7"/>
+              <div class="ticks"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-head">
+              <div class="sl-name"><span class="sw" style="background:#404652"></span>CASH · COMPUTED</div>
+              <div class="sl-vals"><span id="sl-ca-pct">3%</span><span class="eur" id="sl-ca-eur">€15,000</span></div>
+            </div>
+            <div style="font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:6px">// cash = 100 − (equities + fixed_income + real_assets)</div>
+          </div>
+        </div>
+        <div class="sl-foot">
+          <div class="total" id="totalLine">TOTAL · <b>100%</b> · €500,000</div>
+          <button class="reset" id="resetBtn">↺ IPS OPTIMAL</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel proj-panel fade">
+      <div class="p-head">
+        <div><span class="ix">03.3</span>20-YEAR PROJECTION · €500K BASE</div>
+        <div class="right"><span>SCENARIOS · 3</span></div>
+      </div>
+      <canvas id="projChart" height="180"></canvas>
+      <div class="proj-meta">
+        <div class="leg"><span class="sw" style="background:var(--up)"></span>Bull · +13% p.a.<span class="dv">·</span><span id="bullEnd" class="num"></span></div>
+        <div class="leg"><span class="sw" style="background:var(--cyan)"></span>Base · +6.5% p.a.<span class="dv">·</span><span id="baseEnd" class="num"></span></div>
+        <div class="leg"><span class="sw" style="background:var(--ink-3)"></span>Bear · +3% p.a.<span class="dv">·</span><span id="bearEnd" class="num"></span></div>
+      </div>
+    </div>
+
+    <div class="panel fade" style="margin-top:24px;background:linear-gradient(180deg,#0c0e10,#0a0c0e)">
+      <div class="p-head">
+        <div><span class="ix">03.4</span>🇧🇬 BULGARIA · EUROZONE CONTEXT</div>
+        <div class="right">JAN 2026</div>
+      </div>
+      <div class="p-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+        <div>
+          <div style="font-family:var(--mono);font-size:24px;color:var(--acc);font-weight:300">~0.4%</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-top:8px">FX cost eliminated p.a.</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:24px;color:var(--acc);font-weight:300">100%</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-top:8px">EUR-denominated mandate</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:24px;color:var(--acc);font-weight:300">∞</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-top:8px">ECB framework access</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink-2);line-height:1.55">
+            Salary, business revenues, and portfolio now align in one currency. The investment case for Eurozone fixed income is structurally strengthened.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §04 HOLDINGS -->
+<section class="s" id="holdings">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 04 / 07</div>
+      <div class="s-title">Portfolio <em>construction</em></div>
+      <div class="s-side">13 INSTRUMENTS · UCITS<span class="v">BLENDED TER 0.22%</span></div>
+    </div>
+    <div class="panel fade">
+      <div class="holdings-toolbar">
+        <div class="filters">
+          <button class="filter active" data-f="all">ALL <span>13</span></button>
+          <button class="filter" data-f="eq">EQUITIES <span>5</span></button>
+          <button class="filter" data-f="fi">FIXED INCOME <span>5</span></button>
+          <button class="filter" data-f="ra">REAL ASSETS <span>2</span></button>
+          <button class="filter" data-f="ca">CASH <span>1</span></button>
+        </div>
+        <div class="holdings-search">
+          <span>›</span>
+          <input type="text" id="hSearch" placeholder="search ticker · name…"/>
+        </div>
+      </div>
+      <div class="htbl-wrap">
+        <table class="htbl" id="hTable">
+          <thead>
+            <tr>
+              <th>#</th><th>INSTRUMENT</th><th>TICKER</th><th>CLASS</th>
+              <th class="r">WEIGHT</th><th class="r">EUR VALUE</th><th class="r">TER</th><th>RATIONALE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-c="eq"><td class="num">01</td><td class="nm">iShares MSCI World UCITS ETF</td><td class="tk">IWDA</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">25.0%<span class="wt-bar" style="--w:100%"></span></td><td class="r eur">€125,000</td><td class="r ter">0.20%</td><td class="note">Core diversification — antidote to business concentration</td></tr>
+            <tr data-c="eq"><td class="num">02</td><td class="nm">iShares Core EURO STOXX 50 ETF</td><td class="tk">EXW1</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">10.0%<span class="wt-bar" style="--w:40%"></span></td><td class="r eur">€50,000</td><td class="r ter">0.10%</td><td class="note">Eurozone tilt; aligned with post-accession narrative</td></tr>
+            <tr data-c="eq"><td class="num">03</td><td class="nm">iShares MSCI Emerging Markets ETF</td><td class="tk">EIMI</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">8.0%<span class="wt-bar" style="--w:32%"></span></td><td class="r eur">€40,000</td><td class="r ter">0.18%</td><td class="note">AI/tech tailwinds — aligned with Ivan's IT background</td></tr>
+            <tr data-c="eq"><td class="num">04</td><td class="nm">iShares MSCI World ESG Screened ETF</td><td class="tk">SAWD</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">7.0%<span class="wt-bar" style="--w:28%"></span></td><td class="r eur">€35,000</td><td class="r ter">0.20%</td><td class="note">Honors ESG values — near-zero tracking-error vs. parent index</td></tr>
+            <tr data-c="eq"><td class="num">05</td><td class="nm">Xtrackers MSCI World Info Tech ETF</td><td class="tk">XDWT</td><td><span class="cls-pill cls-eq">EQ</span></td><td class="r wt">5.0%<span class="wt-bar" style="--w:20%"></span></td><td class="r eur">€25,000</td><td class="r ter">0.25%</td><td class="note">Tech conviction — capped vs. overconfidence bias</td></tr>
+            <tr data-c="fi"><td class="num">06</td><td class="nm">iShares € Govt Bond 7–10yr ETF</td><td class="tk">IEGY</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">12.0%<span class="wt-bar" style="--w:48%"></span></td><td class="r eur">€60,000</td><td class="r ter">0.09%</td><td class="note">Equity shock absorber — highest-quality EUR safety</td></tr>
+            <tr data-c="fi"><td class="num">07</td><td class="nm">iShares € Corporate Bond ETF</td><td class="tk">IEBC</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">10.0%<span class="wt-bar" style="--w:40%"></span></td><td class="r eur">€50,000</td><td class="r ter">0.20%</td><td class="note">+0.8–1.2% yield premium · 700+ issuers</td></tr>
+            <tr data-c="fi"><td class="num">08</td><td class="nm">iShares € High Yield Corp Bond ETF</td><td class="tk">IHYG</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">5.0%<span class="wt-bar" style="--w:20%"></span></td><td class="r eur">€25,000</td><td class="r ter">0.50%</td><td class="note">Yield accelerator 5–7% · capped at 5%</td></tr>
+            <tr data-c="fi"><td class="num">09</td><td class="nm">Bulgaria Republic Eurobond 3.125% '34</td><td class="tk">BULGAR</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">—</td><td class="note">Patriotic conviction · matures aligned with horizon</td></tr>
+            <tr data-c="fi"><td class="num">10</td><td class="nm">Amundi Euro Short Duration Bond ETF</td><td class="tk">CSH2</td><td><span class="cls-pill cls-fi">FI</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">0.07%</td><td class="note">Duration buffer — shields vs. rate risk</td></tr>
+            <tr data-c="ra"><td class="num">11</td><td class="nm">iShares Global Infrastructure ETF</td><td class="tk">INFR</td><td><span class="cls-pill cls-ra">RA</span></td><td class="r wt">4.0%<span class="wt-bar" style="--w:16%"></span></td><td class="r eur">€20,000</td><td class="r ter">0.65%</td><td class="note">Inflation-linked revenues — familiar to a long-term CEO</td></tr>
+            <tr data-c="ra"><td class="num">12</td><td class="nm">iShares Dev. Markets Property Yield ETF</td><td class="tk">IWDP</td><td><span class="cls-pill cls-ra">RA</span></td><td class="r wt">3.0%<span class="wt-bar" style="--w:12%"></span></td><td class="r eur">€15,000</td><td class="r ter">0.59%</td><td class="note">Liquid REIT exposure — inflation hedge sans illiquidity</td></tr>
+            <tr data-c="ca"><td class="num">13</td><td class="nm">EUR Money Market Fund</td><td class="tk">MMF</td><td><span class="cls-pill cls-ca">CA</span></td><td class="r wt">3.0%<span class="wt-bar" style="--w:12%"></span></td><td class="r eur">€15,000</td><td class="r ter">~0.05%</td><td class="note">Behavioral anchor · prevents panic-selling in volatility</td></tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">PORTFOLIO TOTAL · 4 ASSET CLASSES</td>
+              <td class="r acc">100.0%</td>
+              <td class="r acc">€500,000</td>
+              <td class="r acc">~0.22%</td>
+              <td class="note" style="color:var(--ink-2)">Weighted avg expense ratio</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §05 RISK -->
+<section class="s" id="risk">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 05 / 07</div>
+      <div class="s-title">Risk, scenarios <em>&amp; behavioral firewall</em></div>
+      <div class="s-side">5 BIASES · 4 SCENARIOS<span class="v">PRE-COMMITTED RULES</span></div>
+    </div>
+
+    <div class="panel calc-panel fade">
+      <div class="p-head">
+        <div><span class="ix">05.1</span>SCENARIO CALCULATOR · MODEL ANY CAPITAL</div>
+        <div class="right">COMPOUND INTEREST · 4 PATHS</div>
+      </div>
+      <div class="calc-body">
+        <div class="calc-controls">
+          <div class="lbl">CAPITAL · EUR</div>
+          <input type="number" class="calc-input" id="calcAmt" value="500000" min="1000" step="1000"/>
+          <div class="lbl">HORIZON</div>
+          <div class="horizons">
+            <button class="h-btn" data-y="5">5Y</button>
+            <button class="h-btn active" data-y="10">10Y</button>
+            <button class="h-btn" data-y="15">15Y</button>
+            <button class="h-btn" data-y="20">20Y</button>
+          </div>
+        </div>
+        <div class="calc-results" id="calcResults"></div>
+      </div>
+    </div>
+
+    <div class="risk-metrics fade">
+      <div class="rm"><div class="l">EXPECTED RETURN</div><div class="v">+6.0–6.5%</div><div class="s">per annum</div></div>
+      <div class="rm"><div class="l">VOLATILITY</div><div class="v">9–11%</div><div class="s">σ annualised</div></div>
+      <div class="rm"><div class="l">MAX DRAWDOWN</div><div class="v dn">−22%</div><div class="s">2008-equivalent shock</div></div>
+      <div class="rm"><div class="l">SHARPE RATIO</div><div class="v">~0.60</div><div class="s">vs. 3.0% RF</div></div>
+      <div class="rm"><div class="l">BLENDED YIELD</div><div class="v">~2.8%</div><div class="s">income · coupons</div></div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin-bottom:14px" class="fade">› MARKET SCENARIOS / 1Y</div>
+    <div class="scen-grid fade">
+      <div class="scen bull">
+        <div class="scen-head"><div class="scen-tag">● BULL CASE</div><div class="scen-prob">P=20%</div></div>
+        <div class="scen-ret">+12–14%</div>
+        <div class="scen-trig">Strong EM rally, AI/tech boom, ECB rate cuts, Eurozone expansion</div>
+        <div class="scen-impact">+€60–70k · sell outperformers via rebalance rule</div>
+      </div>
+      <div class="scen base">
+        <div class="scen-head"><div class="scen-tag">● BASE CASE</div><div class="scen-prob">P=55%</div></div>
+        <div class="scen-ret">+6.5%</div>
+        <div class="scen-trig">Steady Eurozone growth, AI sector expansion, stable ECB rates</div>
+        <div class="scen-impact">+€32,500 · maintain target weights</div>
+      </div>
+      <div class="scen bear">
+        <div class="scen-head"><div class="scen-tag">● BEAR CASE</div><div class="scen-prob">P=15%</div></div>
+        <div class="scen-ret">−7 to −10%</div>
+        <div class="scen-trig">Geopolitical shock, energy spike, EM contagion</div>
+        <div class="scen-impact">−€35–50k · bonds buffer · cash buys equities</div>
+      </div>
+      <div class="scen infl">
+        <div class="scen-head"><div class="scen-tag">● INFLATION SPIKE</div><div class="scen-prob">P=10%</div></div>
+        <div class="scen-ret">+1 to +3%</div>
+        <div class="scen-trig">Persistent Euro inflation &gt;5%, energy crisis</div>
+        <div class="scen-impact">Modest real loss · INFR + IWDP linked</div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin:48px 0 14px" class="fade">› 5 BIASES · CLICK CARD TO REVEAL FIX</div>
+    <div class="bias-grid fade">
+      <div class="bias">
+        <div class="num">B/01</div>
+        <div class="nm">Home Bias</div>
+        <div class="desc">Living in Bulgaria creates a structural pull toward over-weighting local assets — suboptimal for true diversification.</div>
+        <div class="fix-content">
+          <div class="lbl">PORTFOLIO FIX</div>
+          <div class="txt">IWDA (25%) + EIMI (8%) enforce global reach across 23 developed + 24 emerging markets. Bulgarian exposure capped at BULGAR 4%.</div>
+          <div class="rule">IPS R02 · Max 25% per instrument</div>
+        </div>
+        <div class="fix">REVEAL FIX</div>
+      </div>
+      <div class="bias">
+        <div class="num">B/02</div>
+        <div class="nm">Loss Aversion</div>
+        <div class="desc">Losses feel ~2× more painful than equivalent gains (Kahneman &amp; Tversky, 1979). Risk of panic-selling in a drawdown.</div>
+        <div class="fix-content">
+          <div class="lbl">PORTFOLIO FIX</div>
+          <div class="txt">30-day behavioral guard prevents strategic changes after a &gt;10% market decline. €15k cash buffer removes urgency to sell.</div>
+          <div class="rule">IPS R04 · 30-day blackout post -10%</div>
+        </div>
+        <div class="fix">REVEAL FIX</div>
+      </div>
+      <div class="bias">
+        <div class="num">B/03</div>
+        <div class="nm">Overconfidence</div>
+        <div class="desc">17 years in IT may tempt over-allocating to technology — "I know this domain better than most investors."</div>
+        <div class="fix-content">
+          <div class="lbl">PORTFOLIO FIX</div>
+          <div class="txt">XDWT hard-capped at 5%. Zero individual tech stock positions. All equity exposure passive and index-based.</div>
+          <div class="rule">IPS · No sector &gt;5% of portfolio</div>
+        </div>
+        <div class="fix">REVEAL FIX</div>
+      </div>
+      <div class="bias">
+        <div class="num">B/04</div>
+        <div class="nm">Recency Bias</div>
+        <div class="desc">Extrapolating recent winners into the future — chasing last year's best-performing asset class.</div>
+        <div class="fix-content">
+          <div class="lbl">PORTFOLIO FIX</div>
+          <div class="txt">Annual rebalancing on 30 April mechanically enforces "buy low, sell high" — overrides momentum by selling outperformers.</div>
+          <div class="rule">IPS R03 · Annual rebalance 30 Apr</div>
+        </div>
+        <div class="fix">REVEAL FIX</div>
+      </div>
+      <div class="bias">
+        <div class="num">B/05</div>
+        <div class="nm">Anchoring</div>
+        <div class="desc">Refusing to rebalance because a position is "down from what I paid" — prioritising cost price over target weight.</div>
+        <div class="fix-content">
+          <div class="lbl">PORTFOLIO FIX</div>
+          <div class="txt">Rebalancing targets are percentage weights — the system is deliberately indifferent to purchase price.</div>
+          <div class="rule">Weight-based · not price-based</div>
+        </div>
+        <div class="fix">REVEAL FIX</div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.18em;margin-top:14px" class="fade">› BEHAVIORAL FIREWALL</div>
+    <div class="rules-grid fade">
+      <div class="rule">
+        <div class="n">F/01 · REBALANCE</div>
+        <div class="t">Auto-trigger</div>
+        <div class="d">Rebalance automatically when any class drifts &gt;±5% — no judgment, no discretion.</div>
+      </div>
+      <div class="rule">
+        <div class="n">F/02 · DISCIPLINE</div>
+        <div class="t">Weight-based</div>
+        <div class="d">All trades follow target weights, never recent performance, never forecasts.</div>
+      </div>
+      <div class="rule">
+        <div class="n">F/03 · GUARD</div>
+        <div class="t">30-day blackout</div>
+        <div class="d">No strategic changes within 30 days of a &gt;10% market decline. Period.</div>
+      </div>
+      <div class="rule">
+        <div class="n">F/04 · REVIEW</div>
+        <div class="t">Annual cadence</div>
+        <div class="d">IPS amended only for fundamental life changes — never market noise.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §06 IMPLEMENTATION -->
+<section class="s" id="implementation">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 06 / 07</div>
+      <div class="s-title">Implementation <em>&amp; monitoring</em></div>
+      <div class="s-side">PHASED ENTRY · 80/20<span class="v">IBKR · IRELAND CUSTODY</span></div>
+    </div>
+    <div class="impl-grid fade">
+      <div class="impl-panel">
+        <div class="p-head"><div><span class="ix">06.1</span>ENTRY STRATEGY · MAY 2026</div><div class="right">€500,000</div></div>
+        <div class="impl-panel-body">
+          <div class="phase">
+            <div class="pn">P1<b>80%</b></div>
+            <div>
+              <div class="pt">Lump sum · €400,000</div>
+              <div class="pd">Week 1, May 2026. Vanguard Research (2012): lump sum outperforms DCA in ~68% of historical periods.</div>
+            </div>
+          </div>
+          <div class="phase">
+            <div class="pn">P2<b>20%</b></div>
+            <div>
+              <div class="pt">DCA · €100,000</div>
+              <div class="pd">6 monthly installments of €16,667 (May–Oct 2026). Behavioral comfort mechanism · reduces regret risk.</div>
+            </div>
+          </div>
+          <div style="margin-top:18px;padding:18px;border:1px solid var(--line-2);background:#0a0c0e;border-radius:4px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:8px">PLATFORM · CUSTODY</div>
+            <div style="color:var(--ink);font-size:14px;font-weight:500;margin-bottom:4px">Interactive Brokers Ireland Ltd.</div>
+            <div style="color:var(--ink-3);font-size:12px;line-height:1.55">Best-in-class UCITS ETF access · Xetra · Euronext · EUR base · MiFID II compliant · EU deposit protection.</div>
+          </div>
+        </div>
+      </div>
+      <div class="impl-panel">
+        <div class="p-head"><div><span class="ix">06.2</span>BLENDED BENCHMARK</div><div class="right">PERFORMANCE</div></div>
+        <div class="impl-panel-body">
+          <div class="bench-row">
+            <div class="bench-info">
+              <div class="bench-name">MSCI World Index (EUR)</div>
+              <div class="bench-bar"><div class="bench-fill" data-w="60"></div></div>
+            </div>
+            <div class="bench-pct">60%</div>
+          </div>
+          <div class="bench-row">
+            <div class="bench-info">
+              <div class="bench-name">Bloomberg Euro Aggregate Bond</div>
+              <div class="bench-bar"><div class="bench-fill alt" data-w="35"></div></div>
+            </div>
+            <div class="bench-pct">35%</div>
+          </div>
+          <div class="bench-row">
+            <div class="bench-info">
+              <div class="bench-name">FTSE EPRA NAREIT Global</div>
+              <div class="bench-bar"><div class="bench-fill alt2" data-w="5"></div></div>
+            </div>
+            <div class="bench-pct">5%</div>
+          </div>
+          <div style="margin-top:18px;padding:18px;border:1px solid var(--line-2);background:#0a0c0e;border-radius:4px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.16em;margin-bottom:8px">REVIEW CADENCE</div>
+            <div style="color:var(--ink);font-size:14px;font-weight:500;margin-bottom:4px">Quarterly · Jan / Apr / Jul / Oct</div>
+            <div style="color:var(--ink-3);font-size:12px;line-height:1.55">Written notes vs. benchmark. Monthly snapshot — no action unless IPS thresholds triggered.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline fade">
+      <div class="p-head"><div><span class="ix">06.3</span>KEY MILESTONES · FAMILY TIMELINE</div><div class="right">2026 → 2041</div></div>
+      <div class="tl-row">
+        <div class="yr">PHASE I<b>2026</b></div>
+        <div class="body">
+          <div class="ttl">Portfolio launch</div>
+          <div class="desc">€400k lump sum + €100k DCA over 6 months via IBKR Ireland. First quarterly review July 2026.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="yr">EVENT<b>2027–2028</b></div>
+        <div class="body">
+          <div class="ttl">Daughter's postgraduate education</div>
+          <div class="desc">Liquidate CSH2 (€20k) + supplement from cash buffer for tuition fees. No structural rebalancing required.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="yr">EVENT<b>2031</b></div>
+        <div class="body">
+          <div class="ttl">Son's university enrollment</div>
+          <div class="desc">Withdraw €20–30k from IEBC corporate bond sleeve. Equity sleeve untouched — preserves compounding.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="yr">GLIDE<b>2035</b></div>
+        <div class="body">
+          <div class="ttl">9 years to retirement</div>
+          <div class="desc">Strategic glide path: equity target 55% → 45%. Increase IEGY government bonds to 20%. Reduce volatility into accumulation tail.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="yr">FINAL<b>2038–2041</b></div>
+        <div class="body">
+          <div class="ttl">Ivan's retirement window</div>
+          <div class="desc">Begin systematic withdrawals at 3–4% annual drawdown rate. Portfolio fully independent of Petrov Dynamics Ltd.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §07 CONCLUSION -->
+<section class="s" id="conclusion">
+  <div class="container">
+    <div class="s-head fade">
+      <div class="s-num">§ 07 / 07</div>
+      <div class="s-title"><em>Conclusion</em></div>
+      <div class="s-side">DISPATCH<span class="v">APR 29 2026</span></div>
+    </div>
+    <div class="conc-grid fade">
+      <div class="conc-text">
+        <p>Ivan Petrov's portfolio is built on three pillars any serious financial professional will recognise as the hallmarks of <span class="pillar">disciplined diversification</span>, <span class="pillar">behavioral finance awareness</span>, and <span class="pillar">long-term thinking anchored in personal values</span>.</p>
+        <p>The €500,000 mandate deploys across <b>13 UCITS-compliant instruments at 0.22% per annum</b> — meaning Ivan retains 99.78% of gross returns annually, compounding silently and powerfully over two decades.</p>
+        <p>This is not a portfolio designed to beat the market through clever prediction. It is designed to <b>match Ivan's goals precisely, survive his behavioral impulses with structured rules, and compound quietly for 15 years</b> — because the investor who stays invested, wins.</p>
+      </div>
+      <div class="quote">
+        <div class="qm">"</div>
+        <q>Investing is not about beating others at their game. It is about controlling yourself at your own game.</q>
+        <cite>— Benjamin Graham · The Intelligent Investor</cite>
+      </div>
+    </div>
+    <div class="refs fade">
+      <div class="p-head"><div><span class="ix">07.1</span>REFERENCES · 09 SOURCES</div><div class="right">PEER-REVIEWED · OFFICIAL</div></div>
+      <ol class="refs-list">
+        <li><em>IMF (2026).</em> World Economic Outlook: April 2026. IMF Publications, Washington D.C.</li>
+        <li><em>ECB (2026).</em> Bulgaria's Eurozone Accession: Monetary Policy Implications.</li>
+        <li><em>MSCI Inc. (2026).</em> MSCI World Index Fact Sheet — March 2026.</li>
+        <li><em>BlackRock / iShares (2026).</em> IWDA &amp; EXW1 UCITS ETF Prospectuses.</li>
+        <li><em>Bulgarian National Bank (2025).</em> Annual Report: Transition to the Euro Area 2025.</li>
+        <li><em>Kahneman, D. &amp; Tversky, A. (1979).</em> Prospect Theory. <em>Econometrica</em>, 47(2).</li>
+        <li><em>Vanguard Research (2012).</em> Dollar-Cost Averaging Just Means Taking Risk Later.</li>
+        <li><em>Graham, B. (1949).</em> The Intelligent Investor. Harper &amp; Brothers.</li>
+        <li><em>Thaler, R. &amp; Sunstein, C. (2008).</em> Nudge. Yale University Press.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="l">IPP/2026 · Ivan Petrov Portfolio Terminal</div>
+  <div class="r">
+    <span>YOUNG INVESTOR HACKATHON</span>
+    <span>PREPARED · ESHWAR + TEAM</span>
+    <span>APR 29 2026</span>
+  </div>
+</footer>
+
+<script>
+// CLOCK
+function tick(){
+  const d=new Date();
+  const t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('tbClock').innerHTML='SOFIA · '+t+' EET';
+}
+tick(); setInterval(tick,1000);
+
+// COMMAND CYCLE
+const cmds=[
+  'portfolio --client="Ivan Petrov" --capital=€500,000 --horizon=12-20yr --status=ACTIVE',
+  'allocation --equities=55% --fixed=35% --real=7% --cash=3% --currency=EUR',
+  'rebalance --next=30/04/2027 --drift-trigger=±5% --behavioral-guard=30d',
+  'risk --vol=9-11% --sharpe=0.60 --max-dd=-22% --shock-tested',
+  'firewall --rules-based --no-discretion --ips-anchored --status=LIVE'
+];
+let ci=0;
+setInterval(()=>{ci=(ci+1)%cmds.length;document.getElementById('tbCmd').textContent=cmds[ci]},5000);
+
+// TICKER
+const tk=[
+  {n:'IWDA',p:94.12,c:+0.34},{n:'EXW1',p:51.40,c:+0.18},
+  {n:'EIMI',p:28.76,c:-0.22},{n:'SAWD',p:71.35,c:+0.41},
+  {n:'XDWT',p:33.20,c:+0.87},{n:'IEGY',p:112.45,c:-0.05},
+  {n:'IEBC',p:103.60,c:+0.02},{n:'IHYG',p:87.30,c:-0.14},
+  {n:'INFR',p:22.80,c:+0.11},{n:'IWDP',p:19.45,c:-0.08},
+  {n:'CSH2',p:100.12,c:+0.01},{n:'BULGAR34',p:98.75,c:+0.15},
+  {n:'EUR/USD',p:1.0942,c:+0.12},{n:'DAX',p:18742,c:+0.41},
+  {n:'STOXX50',p:5128,c:+0.22},{n:'BUND10Y',p:2.34,c:-0.02},
+];
+function buildTicker(){
+  const inner=document.getElementById('tickerInner');
+  const all=[...tk,...tk,...tk];
+  inner.innerHTML=all.map(t=>{
+    const up=t.c>=0;
+    return `<div class="ticker-item"><span class="tk">${t.n}</span><span class="tp">${typeof t.p==='number'?t.p.toFixed(t.p<10?4:2):t.p}</span><span class="tc ${up?'up':'dn'}">${up?'+':''}${t.c.toFixed(2)}%</span></div>`;
+  }).join('');
+}
+buildTicker();
+setInterval(()=>{
+  tk.forEach(t=>{const d=(Math.random()-.5)*0.3;t.p=Math.max(.5,+(t.p+d).toFixed(t.p<10?4:2));t.c=+(t.c+(Math.random()-.5)*0.05).toFixed(2)});
+  buildTicker();
+},5000);
+
+// LIVE NAV + SPARKLINE
+let nav=500000;
+const navEl=document.getElementById('navVal');
+const dEl=document.getElementById('navDelta');
+const spark=document.getElementById('kpiSpark');
+const navHist=Array.from({length:50},()=>500000+(Math.random()-.5)*2000);
+
+function drawSpark(){
+  const min=Math.min(...navHist),max=Math.max(...navHist),range=max-min||1;
+  const w=400,h=60;
+  const pts=navHist.map((v,i)=>`${(i/(navHist.length-1))*w},${h-((v-min)/range)*(h-8)-4}`);
+  const last=navHist[navHist.length-1];
+  const isUp=last>=navHist[0];
+  const col=isUp?'#22d39a':'#ff5470';
+  spark.innerHTML=`<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".25"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${h} ${pts.join(' ')} ${w},${h}" fill="url(#sg)"/><polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round"/><circle cx="${w}" cy="${h-((last-min)/range)*(h-8)-4}" r="3" fill="${col}"/>`;
+}
+drawSpark();
+
+setInterval(()=>{
+  const d=(Math.random()-.45)*180;
+  nav=Math.max(497500,Math.min(503000,nav+d));
+  navHist.push(nav);navHist.shift();
+  navEl.textContent=Math.round(nav).toLocaleString('de-DE');
+  const diff=nav-500000;
+  const pct=(diff/500000*100).toFixed(2);
+  const isUp=diff>=0;
+  dEl.innerHTML=`<span style="color:${isUp?'var(--up)':'var(--dn)'}">${isUp?'+':''}€${Math.abs(Math.round(diff)).toLocaleString('de-DE')} · ${isUp?'+':''}${pct}%</span>`;
+  drawSpark();
+},2200);
+
+// ALLOCATION CHART
+const TOTAL=500000;
+const COL=['#5eead4','#5fd1ff','#ffb347','#404652'];
+let ring;
+try{
+  const ringCtx=document.getElementById('allocChart').getContext('2d');
+  ring=new Chart(ringCtx,{
+    type:'doughnut',
+    data:{
+      labels:['Equities','Fixed Income','Real Assets','Cash'],
+      datasets:[{data:[55,35,7,3],backgroundColor:COL,borderColor:'#070809',borderWidth:3,hoverOffset:8}]
+    },
+    options:{
+      cutout:'72%',
+      animation:{duration:900,easing:'easeOutQuart'},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>` ${c.label} · ${c.raw}% · €${Math.round(c.raw/100*TOTAL).toLocaleString('de-DE')}`},
+          backgroundColor:'#000',titleFont:{family:'JetBrains Mono',size:11,weight:'600'},
+          bodyFont:{family:'JetBrains Mono',size:11},padding:12,borderColor:'#262a30',borderWidth:1,cornerRadius:3,
+        }
+      }
+    }
+  });
+}catch(e){console.warn('Alloc chart:',e)}
+
+function fmt(v){return '€'+Math.round(v).toLocaleString('de-DE')}
+
+function update(){
+  const eq=+document.getElementById('sl-eq').value;
+  const fi=+document.getElementById('sl-fi').value;
+  const ra=+document.getElementById('sl-ra').value;
+  const ca=Math.max(0,100-eq-fi-ra);
+  const tot=eq+fi+ra+ca;
+  ['eq','fi','ra','ca'].forEach(k=>{
+    const val={eq,fi,ra,ca}[k];
+    document.getElementById(`sl-${k}-pct`).textContent=val+'%';
+    document.getElementById(`sl-${k}-eur`).textContent=fmt(val/100*TOTAL);
+    document.getElementById(`lg-${k}-p`).textContent=val+'%';
+    document.getElementById(`lg-${k}-e`).textContent=fmt(val/100*TOTAL);
+  });
+  document.getElementById('ringTotal').innerHTML=tot===100?'100% · BALANCED':`${tot}% · DRIFT`;
+  const tEl=document.getElementById('totalLine');
+  tEl.innerHTML=`TOTAL · <b>${tot}%</b> · ${fmt(TOTAL)}`;
+  tEl.className='total'+(tot===100?'':' warn');
+  if(ring){ring.data.datasets[0].data=[eq,fi,ra,ca];ring.update('none');}
+}
+['sl-eq','sl-fi','sl-ra'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  document.getElementById('sl-eq').value=55;
+  document.getElementById('sl-fi').value=35;
+  document.getElementById('sl-ra').value=7;
+  update();
+});
+
+// PROJECTION CHART
+const yrs=Array.from({length:21},(_,i)=>2026+i);
+const grow=r=>yrs.map((_,i)=>Math.round(500000*Math.pow(1+r,i)));
+try{
+  const projCtx=document.getElementById('projChart').getContext('2d');
+  new Chart(projCtx,{
+    type:'line',
+    data:{
+      labels:yrs,
+      datasets:[
+        {label:'Bull +13%',data:grow(.13),borderColor:'#22d39a',backgroundColor:'rgba(34,211,154,.06)',borderWidth:2,pointRadius:0,pointHoverRadius:5,fill:true,tension:.35},
+        {label:'Base +6.5%',data:grow(.065),borderColor:'#5fd1ff',backgroundColor:'rgba(95,209,255,.04)',borderWidth:2,pointRadius:0,pointHoverRadius:5,fill:false,tension:.35},
+        {label:'Bear +3%',data:grow(.03),borderColor:'#6b7280',borderWidth:1.5,borderDash:[4,4],pointRadius:0,pointHoverRadius:5,fill:false,tension:.35},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>` ${c.dataset.label} · €${c.raw.toLocaleString('de-DE')}`},
+          backgroundColor:'#000',titleColor:'#5eead4',
+          titleFont:{family:'JetBrains Mono',size:11,weight:'600'},
+          bodyFont:{family:'JetBrains Mono',size:11},
+          padding:12,borderColor:'#262a30',borderWidth:1,cornerRadius:3,
+        }
+      },
+      scales:{
+        x:{grid:{color:'#1a1d22',drawBorder:false},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10},maxRotation:0}},
+        y:{grid:{color:'#1a1d22',drawBorder:false},ticks:{color:'#6b7280',font:{family:'JetBrains Mono',size:10},callback:v=>'€'+(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1000)+'K')}}
+      }
+    }
+  });
+}catch(e){console.warn('Proj chart:',e)}
+document.getElementById('bullEnd').textContent='€'+(grow(.13)[20]/1e6).toFixed(2)+'M';
+document.getElementById('baseEnd').textContent='€'+(grow(.065)[20]/1e6).toFixed(2)+'M';
+document.getElementById('bearEnd').textContent='€'+(grow(.03)[20]/1e6).toFixed(2)+'M';
+
+// CALCULATOR
+const sc=[
+  {k:'bull',l:'BULL · +13%',r:.13},
+  {k:'base',l:'BASE · +6.5%',r:.065},
+  {k:'bear',l:'BEAR · +3%',r:.03},
+  {k:'infl',l:'INFLATION · +2%',r:.02},
+];
+let cy=10;
+function runCalc(){
+  const a=parseFloat(document.getElementById('calcAmt').value)||0;
+  document.getElementById('calcResults').innerHTML=sc.map(s=>{
+    const final=Math.round(a*Math.pow(1+s.r,cy));
+    const gain=final-a;
+    return `<div class="calc-result ${s.k}"><div class="l">${s.l}</div><div class="v">€${final.toLocaleString('de-DE')}</div><div class="g">${gain>=0?'+':'−'}€${Math.abs(gain).toLocaleString('de-DE')} · over ${cy}yr</div></div>`;
+  }).join('');
+}
+document.getElementById('calcAmt').addEventListener('input',runCalc);
+document.querySelectorAll('.h-btn').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('.h-btn').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+  cy=+this.dataset.y;
+  runCalc();
+}));
+runCalc();
+
+// BIASES
+document.querySelectorAll('.bias').forEach(b=>{
+  b.addEventListener('click',()=>{
+    b.classList.toggle('flipped');
+    b.querySelector('.fix').textContent=b.classList.contains('flipped')?'HIDE FIX':'REVEAL FIX';
+  });
+});
+
+// HOLDINGS FILTER + SEARCH
+function applyFilter(){
+  const f=document.querySelector('.filter.active').dataset.f;
+  const q=document.getElementById('hSearch').value.toLowerCase();
+  document.querySelectorAll('#hTable tbody tr').forEach(r=>{
+    const cMatch=f==='all'||r.dataset.c===f;
+    const qMatch=!q||r.textContent.toLowerCase().includes(q);
+    r.style.display=cMatch&&qMatch?'':'none';
+  });
+}
+document.querySelectorAll('.filter').forEach(f=>f.addEventListener('click',function(){
+  document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+  applyFilter();
+}));
+document.getElementById('hSearch').addEventListener('input',applyFilter);
+
+// SCROLL FADE + BENCH BARS
+function revealEl(el){
+  el.classList.add('in');
+  el.querySelectorAll('.bench-fill').forEach(b=>{
+    setTimeout(()=>b.style.width=b.dataset.w+'%',200);
+  });
+}
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){revealEl(e.target);obs.unobserve(e.target);}
+  });
+},{threshold:0.05,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+// Fallback: reveal any remaining hidden elements after 2s (handles observer edge cases)
+setTimeout(()=>document.querySelectorAll('.fade:not(.in)').forEach(revealEl),2000);
+</script>
+</body>
+</html>
