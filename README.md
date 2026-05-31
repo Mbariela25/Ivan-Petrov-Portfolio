@@ -1,4 +1,4 @@
-# SSP/2026 — Stefan Stefanov Portfolio Terminal
+# SSP/2026 — Stefan Stefanov Portfolio Terminal 
 
 > **Young Investor 2026** · Finance Club at Sofia High School of Mathematics (SMG)  
 > Prepared by **Mariela Bedrova and Team** · MAY 2026
