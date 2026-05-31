@@ -1,74 +1,102 @@
-# PRD – Young Investor Hackathon 2026  
-**Product:** Investment Portfolio Report for Ivan Petrov  
-**Title (exactly 3 words):** Ivan Petrov Portfolio  
-**Version:** 1.0  
-**Date:** April 29, 2026  
-**Submitted by:** Eshwar + Team  
+# Young Investor 2026
 
-## 1. Purpose
-Create a professional 6–8 page investment portfolio document for the hypothetical Bulgarian businessman Ivan Petrov that wins the Young Investor Hackathon.  
-The report must feel like a real financial advisor deliverable while perfectly matching the judges’ values (Dr. Boyan Ivanchev + SMG Finance Club): behavioral finance, rules-based discipline, diversification, educational clarity, and long-term thinking.
+## Introduction
 
-## 2. Target Output
-- Full report in clean Markdown (ready for conversion to PDF)  
-- Times New Roman 12pt style simulation (use headings, tables, bullet points)  
-- Total length: 6–8 pages when converted to PDF (double-spaced equivalent)  
-- Language: Professional English (clear, educational tone suitable for high-school judges)  
-- Optional: Add Bulgarian section titles in parentheses if it improves authenticity
+For the third consecutive year, the Finance Club at the Sofia High School of Mathematics is organizing the **"Young Investor"** competition.
 
-## 3. Mandatory Requirements
-- Must include the exact title: **Ivan Petrov Portfolio**  
-- Must contain exactly the 7 sections listed below  
-- Must include a professional pie chart (generate Matplotlib code or describe SVG)  
-- Must include at least one detailed table for holdings  
-- Must include the behavioral finance bias table  
-- No hype, no unrealistic return promises  
-- Every decision must be explicitly linked to Ivan’s persona and IPS
+The winners from the previous two years are currently studying at some of the world's most prestigious universities — **ETH Zurich** and **Università Bocconi**. The presidents from previous years, as well as the current president and vice president of the club, have also been admitted to Università Bocconi.
 
-## 4. Ivan Petrov Persona (use exactly this)
-- 48 years old, Sofia, Bulgaria  
-- Founder & CEO of Petrov Dynamics Ltd. (IT services & digital transformation, 140 employees, founded 2009)  
-- Net worth ≈ €1.2M, annual income €120k–150k  
-- Family: Married, daughter 21 (Finance student), son 16 (Sofia Math High School + Finance Club member)  
-- Values: Financial literacy for Bulgarian youth, behavioral finance discipline, ethical/sustainable investing, Bulgaria’s Eurozone success  
-- Goals: Diversify from business risk, fund children’s education/inheritance, comfortable retirement in 12–15 years  
-- Risk Tolerance: Moderate  
-- Time Horizon: 12–20 years  
-- Currency: EUR
+The Finance Club is a group of students from the Sofia High School of Mathematics who voluntarily dedicate their free time to studying finance and economics through interactive meetings, seminars, and practical investing and trading with real money on financial markets, guided by industry experts.
 
-## 5. Portfolio Specifications (use exactly)
-- Total capital: €500,000 (hypothetical)  
-- Asset Allocation:  
-  - Equities 55%  
-  - Fixed Income 35%  
-  - Real Assets/Infrastructure 7%  
-  - Cash 3%  
-- Detailed holdings (use these exact instruments with the weights shown in earlier spec)  
-- 2026 context: Bulgaria in Eurozone since Jan 2026, AI/tech tailwinds, moderate geopolitical risks
+The club's mentor is **Dr. Boyan Ivanchev**, founder of behavioral finance and neuroeconomics in Bulgaria and author of scientific publications, including the book *"Rational Investing: Perspectives from Behavioural Finance, Neuroeconomics and AI"*.
 
-## 6. Exact Report Structure (7 sections – follow strictly)
-1. Executive Summary (0.5–1 page)  
-2. Ivan Petrov’s Profile & Investment Policy Statement (IPS) (1 page)  
-3. Asset Allocation Strategy (1–1.5 pages + mandatory pie chart)  
-4. Portfolio Construction & Instrument Selection (2–3 pages + holdings table)  
-5. Risk Analysis, Scenarios & Behavioural Finance (1.5–2 pages + bias table)  
-6. Implementation and Monitoring Plan (0.5–1 page)  
-7. Conclusion (0.5 page)
+---
 
-## 7. Style & Tone
-- Professional yet educational (explain concepts simply, like a mentor to high-school students)  
-- Heavy emphasis on behavioral finance, rules-based process, and avoiding emotional biases  
-- Confident but realistic – use phrases like “disciplined approach”, “long-term thinking”, “protection from common biases”  
-- Every section must clearly link back to Ivan’s goals, values, and moderate risk tolerance
+## About the Competition
 
-## 8. Visual & Formatting Requirements
-- Professional pie chart titled “Ivan Petrov Portfolio Allocation – April 2026”  
-- Clean tables (Markdown format)  
-- Use headings, subheadings, bullet points for readability  
-- Add a short references section at the end (IMF, Eurozone, ETF facts)
+This challenge is intended for students from all over Bulgaria in grades **9 to 12** who are ready to demonstrate knowledge, develop teamwork skills, and immerse themselves in the world of finance, capital markets, investments, and economics.
 
-## 9. Success Criteria for Claude Output
-The generated report must make the judges immediately think:  
-“This team truly understands behavioral finance and built exactly what we would recommend to a real Bulgarian client.”
+Student teams may consist of a minimum of **one** and a maximum of **five participants**.
 
-Generate the complete final Markdown report now using all specifications above.
+In this competition, participants must demonstrate knowledge and skills in finance and economics by creating an investment strategy and portfolio for a hypothetical client named **Stefan Stefanov**.
+
+---
+
+## Evaluation Criteria
+
+* Understanding of Stefan Stefanov's investment goals, desires, interests, and required return.
+* Organization and clarity.
+* Macroeconomic analysis.
+* Financial calculations, diversification, and risk management.
+* Realistic investment approach.
+
+---
+
+## Your Task
+
+Your task is to invest the capital of the persona **Stefan Stefanov**. He has **€700,000** at his disposal, which he entrusts to you.
+
+Your mission is to determine an investment strategy specifically tailored to his investment and life goals based on the information provided.
+
+You must analyze the global economic and geopolitical environment and invest Stefan's money according to your expectations about the future.
+
+---
+
+## The Client
+
+**Stefan Stefanov** is a **37-year-old** man. He is practical, analytical, disciplined, patient, and detail-oriented.
+
+### Interests
+
+* Cooking
+* Skiing
+* Listening to music
+
+### Lifestyle
+
+* Once a year, he takes a **10-day skiing vacation** at a high-end resort in the Alps.
+* He is currently unmarried and does not plan to start a family.
+
+### Financial Background
+
+At the end of **2025**, Stefan sells his company in Germany, which specialized in the maintenance of electric vehicle charging stations.
+
+After paying taxes in Germany, he returns to Bulgaria and deposits **€700,000** into a Bulgarian bank account on **January 1, 2026**.
+
+---
+
+## Report Preparation
+
+Alongside your detailed investment plan, visually present the portfolio allocation using a **pie chart**.
+
+The chart should clearly illustrate:
+
+* Asset allocation
+* Sector allocation
+* Respective portfolio weights
+
+Prepare a report between **3 and 8 pages** long describing your investment strategy in detail.
+
+### Formatting Requirements
+
+Reports must be written in **Microsoft Word** using:
+
+* **Font:** Times New Roman
+* **Font Size:** 12
+* **Line Spacing:** Double spacing
+
+### Submission
+
+Completed reports should be sent to:
+
+**[mlad.investitor@outlook.com](mailto:mlad.investitor@outlook.com)**
+
+---
+
+## Important Note
+
+> The use of artificial intelligence in preparing the reports is **not allowed**.
+>
+> If such actions are detected through specialized verification software, the submitted reports and teams will be **disqualified**.
+
+---
